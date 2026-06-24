@@ -1,0 +1,207 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  resident
+  volunteer
+  admin
+}
+
+enum AlertSeverity {
+  low
+  medium
+  high
+  critical
+}
+
+enum AlertStatus {
+  active
+  resolved
+}
+
+enum ReportStatus {
+  pending
+  verified
+  rejected
+}
+
+enum SensorType {
+  water_level
+  rainfall
+}
+
+enum NotificationChannel {
+  push
+  email
+  sms
+}
+
+enum NotificationType {
+  alert
+  request
+  report
+  shelter
+  system
+}
+
+enum RiskLevel {
+  low
+  medium
+  high
+  critical
+}
+
+model User {
+  id                      String         @id @default(uuid())
+  email                   String         @unique
+  name                    String
+  password                String
+  role                    UserRole       @default(resident)
+  regionId                String?
+  notificationPreferences Json?
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  reports                 Report[]
+  notifications           Notification[]
+  floodRequests           FloodRequest[]
+
+  @@map("users")
+}
+
+model Region {
+  id          String    @id @default(uuid())
+  name        String
+  coordinates Json?
+  riskLevel   RiskLevel @default(low)
+  adminId     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  alerts      Alert[]
+  reports     Report[]
+  sensors     Sensor[]
+
+  @@map("regions")
+}
+
+model Alert {
+  id            String         @id @default(uuid())
+  regionId      String
+  region        Region         @relation(fields: [regionId], references: [id])
+  severity      AlertSeverity
+  title         String
+  description   String
+  issuedBy      String
+  status        AlertStatus    @default(active)
+  createdAt     DateTime       @default(now())
+  resolvedAt    DateTime?
+  updatedAt     DateTime       @updatedAt
+
+  @@map("alerts")
+}
+
+model Report {
+  id          String       @id @default(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  regionId    String?
+  region      Region?      @relation(fields: [regionId], references: [id])
+  description String
+  photoUrl    String?
+  latitude    Float?
+  longitude   Float?
+  waterLevel  Float?
+  status      ReportStatus @default(pending)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("reports")
+}
+
+model Sensor {
+  id           String     @id @default(uuid())
+  regionId     String
+  region       Region     @relation(fields: [regionId], references: [id])
+  type         SensorType
+  currentValue Float
+  threshold    Float
+  lastUpdated  DateTime   @updatedAt
+
+  @@map("sensors")
+}
+
+model EvacuationRoute {
+  id          String @id @default(uuid())
+  regionId    String
+  routeData   Json?
+  shelterName String
+  capacity    Int
+
+  @@map("evacuation_routes")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  type      NotificationType @default(system)
+  title     String
+  message   String
+  link      String?
+  severity  String           @default("info")
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+enum RequestType {
+  evacuation
+  rescue
+  relief
+  medical
+  shelter
+}
+
+enum RequestPriority {
+  low
+  medium
+  high
+  critical
+}
+
+enum RequestStatus {
+  pending
+  assigned
+  in_progress
+  completed
+  cancelled
+}
+
+model FloodRequest {
+  id           String          @id @default(uuid())
+  userId       String
+  user         User            @relation(fields: [userId], references: [id])
+  type         RequestType
+  priority     RequestPriority @default(medium)
+  status       RequestStatus   @default(pending)
+  title        String
+  description  String
+  location     String
+  latitude     Float?
+  longitude    Float?
+  peopleCount  Int             @default(1)
+  contactPhone String?
+  regionId     String?
+  assignedTo   String?
+  notes        String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@map("flood_requests")
+}
