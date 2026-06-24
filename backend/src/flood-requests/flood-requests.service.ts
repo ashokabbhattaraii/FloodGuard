@@ -52,6 +52,14 @@ export class FloodRequestsService {
       link: '/dashboard/admin/requests',
       severity: created.priority,
     });
+    // Alert all volunteers so they can claim it from the Open Requests board.
+    await this.notifications.notifyRole('volunteer', {
+      type: 'request',
+      title: `New ${created.priority} SOS — help needed`,
+      message: `${created.title} — ${created.location}`,
+      link: '/dashboard/volunteer/requests',
+      severity: created.priority,
+    });
     return created;
   }
 

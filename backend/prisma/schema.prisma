@@ -10,6 +10,7 @@ enum UserRole {
   resident
   volunteer
   admin
+  super_admin
 }
 
 enum AlertSeverity {
