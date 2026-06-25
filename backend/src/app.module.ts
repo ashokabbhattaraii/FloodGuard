@@ -12,6 +12,8 @@ import { GeocodingModule } from './geocoding/geocoding.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { EvacuationModule } from './evacuation/evacuation.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { UploadsModule } from './uploads/uploads.module';
+import { HealthController } from './health.controller';
 import { LoggerMiddleware } from './common/logger.middleware';
 
 @Module({
@@ -29,7 +31,9 @@ import { LoggerMiddleware } from './common/logger.middleware';
     AnalyticsModule,
     EvacuationModule,
     NotificationsModule,
+    UploadsModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

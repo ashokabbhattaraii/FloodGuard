@@ -7,6 +7,11 @@ import { useWeather } from "@/app/queries/weather";
 import { useEvacuationRoutes } from "@/app/queries/evacuation";
 import { PageHeader, StatCard, SectionCard, AlertRow, EmptyState, LoadingRows } from "@/app/(dashboard)/_components/DashboardUI";
 import NearestShelterCard from "@/app/_components/ui/NearestShelterCard";
+import WeatherForecast from "@/app/(dashboard)/_components/WeatherForecast";
+import SensorGauges from "@/app/(dashboard)/_components/SensorGauges";
+import PreparednessTips from "@/app/(dashboard)/_components/PreparednessTips";
+import FloodRiskBanner from "@/app/(dashboard)/_components/FloodRiskBanner";
+import RainfallChart from "@/app/(dashboard)/_components/RainfallChart";
 
 const ic = (d: string) => <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d={d} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 
@@ -62,7 +67,10 @@ export default function ResidentOverview() {
     <div>
       <PageHeader title={`Welcome back, ${firstName}`} subtitle={date} />
 
-      {/* Risk banner */}
+      {/* Flood Risk Assessment Banner — most prominent element */}
+      <FloodRiskBanner city="Kathmandu" />
+
+      {/* Active alert status */}
       <div className="rounded-[12px] p-5 mb-6 flex items-center gap-4 border relative overflow-hidden shadow-[var(--shadow-card)]"
         style={{ background: criticalCount > 0 ? "rgba(220,38,38,0.08)" : "rgba(22,163,74,0.08)", borderColor: criticalCount > 0 ? "rgba(220,38,38,0.3)" : "rgba(22,163,74,0.3)" }}>
         <span className="relative flex w-3 h-3 shrink-0">
@@ -117,6 +125,17 @@ export default function ResidentOverview() {
           icon={ic("M10 3l7 6v8H3V9l7-6z")} />
       </div>
 
+      {/* Rainfall forecast — full width for maximum visibility */}
+      <div className="mb-6">
+        <RainfallChart city="Kathmandu" />
+      </div>
+
+      {/* 7-Day forecast + Sensor readings */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+        <WeatherForecast city="Kathmandu" />
+        <SensorGauges />
+      </div>
+
       {/* Alerts + quick actions */}
       <div className="grid lg:grid-cols-3 gap-6">
         <SectionCard title="Active Alerts" className="lg:col-span-2"
@@ -151,6 +170,11 @@ export default function ResidentOverview() {
           </div>
         </SectionCard>
         </div>
+      </div>
+
+      {/* Preparedness checklist */}
+      <div className="mt-6">
+        <PreparednessTips />
       </div>
     </div>
   );

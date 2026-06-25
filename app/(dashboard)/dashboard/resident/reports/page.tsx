@@ -1,9 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState, Suspense } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
-import { reportsService } from '@/app/services';
+import { reportsService, uploadsService } from '@/app/services';
 import {
   EmptyState,
   LoadingRows,
@@ -74,6 +74,11 @@ export function ReportsPageContent() {
   const [waterLevel, setWaterLevel] = useState('');
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState('medium');
+
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
@@ -194,6 +199,31 @@ export function ReportsPageContent() {
   const pageStart = (safePage - 1) * PAGE_SIZE;
   const visibleReports = sortedFiltered.slice(pageStart, pageStart + PAGE_SIZE);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please select an image file (JPG, PNG, etc.)');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Image must be under 10 MB.');
+      return;
+    }
+
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+    setError('');
+  };
+
+  const removePhoto = () => {
+    setPhotoFile(null);
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+    setPhotoPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -208,10 +238,26 @@ export function ReportsPageContent() {
     setSuccess('');
 
     try {
+      let photoUrl: string | undefined;
+
+      if (photoFile) {
+        setUploadingPhoto(true);
+        try {
+          photoUrl = await uploadsService.uploadFile(photoFile);
+        } catch {
+          setError('Failed to upload photo. Please try again.');
+          setSubmitting(false);
+          setUploadingPhoto(false);
+          return;
+        }
+        setUploadingPhoto(false);
+      }
+
       await reportsService.create({
         description: desc,
         location: location.trim() || undefined,
         severity,
+        photoUrl,
         latitude: latitude ?? undefined,
         longitude: longitude ?? undefined,
         waterLevel: waterLevel ? parseFloat(waterLevel) : undefined,
@@ -220,6 +266,7 @@ export function ReportsPageContent() {
       setSuccess('Flood report submitted. You can track it in the list below.');
       setDescription('');
       setWaterLevel('');
+      removePhoto();
       await fetchReports();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : undefined;
@@ -430,6 +477,57 @@ export function ReportsPageContent() {
                   className="form-control px-4 py-2.5 text-sm resize-none min-h-[104px]"
                 />
               </div>
+
+              {/* Photo proof upload */}
+              <div>
+                <label className="text-xs text-app font-semibold mb-1.5 block">Photo proof (optional)</label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+
+                {photoPreview ? (
+                  <div className="relative rounded-[10px] border border-app overflow-hidden bg-[var(--glass-bg-2)]">
+                    <img
+                      src={photoPreview}
+                      alt="Upload preview"
+                      className="w-full h-[120px] object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={removePhoto}
+                      className="absolute top-2 right-2 w-7 h-7 rounded-full bg-[rgba(0,0,0,0.7)] flex items-center justify-center text-white hover:bg-[rgba(220,38,38,0.9)] transition-colors"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <path d="M5 5l10 10M15 5L5 15" />
+                      </svg>
+                    </button>
+                    <div className="px-3 py-2 flex items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#16a34a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16.5 6.5 8.5 14.5 3.5 9.5" />
+                      </svg>
+                      <span className="text-[11px] text-app-muted truncate">{photoFile?.name}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full rounded-[10px] border border-dashed border-app hover:border-[var(--accent)] bg-[var(--glass-bg-2)] hover:bg-[var(--accent-soft)] transition-all duration-200 px-4 py-5 flex flex-col items-center gap-2"
+                  >
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className="text-app-muted">
+                      <rect x="3" y="3" width="18" height="18" rx="3" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <path d="m21 15-5-5L5 21" />
+                    </svg>
+                    <span className="text-[12px] text-app-muted">Click to upload a photo</span>
+                    <span className="text-[10px] text-app-muted opacity-70">JPG, PNG up to 10 MB</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Full-width submit */}
@@ -444,7 +542,7 @@ export function ReportsPageContent() {
                   <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                 </svg>
               ) : null}
-              <span className="relative">{submitting ? 'Submitting…' : 'Submit Flood Report'}</span>
+              <span className="relative">{uploadingPhoto ? 'Uploading photo…' : submitting ? 'Submitting…' : 'Submit Flood Report'}</span>
             </button>
           </form>
         </SectionCard>

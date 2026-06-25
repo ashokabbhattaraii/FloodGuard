@@ -5,6 +5,7 @@ export function useAlerts(regionId?: string) {
   return useQuery({
     queryKey: ['alerts', regionId],
     queryFn: () => alertsService.getAll(regionId),
+    refetchInterval: 60000,
   });
 }
 

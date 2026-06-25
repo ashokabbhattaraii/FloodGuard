@@ -1,0 +1,8 @@
+node_modules/
+.git/
+.env
+test/
+*.spec.ts
+coverage/
+.eslintrc*
+.prettierrc

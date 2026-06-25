@@ -5,6 +5,7 @@ export function useRegions() {
   return useQuery({
     queryKey: ['regions'],
     queryFn: regionsService.getAll,
+    refetchInterval: 120000,
   });
 }
 

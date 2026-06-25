@@ -6,7 +6,15 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
+  app.enableCors({
+    origin: (
+      process.env.FRONTEND_URL ||
+      'http://localhost:3000,http://localhost:3001,https://d1brawvkbdw12u.cloudfront.net,https://d2rcbc2k3a39go.cloudfront.net,http://floodguard-frontend-env.eba-sfpvamy6.us-east-1.elasticbeanstalk.com,http://Floodguard-backend-env-env.eba-uhm53rb8.us-east-1.elasticbeanstalk.com'
+    )
+      .split(',')
+      .map((o) => o.trim()),
+    credentials: true,
+  });
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
@@ -26,6 +34,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(process.env.PORT ?? 5001);
+  await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap();

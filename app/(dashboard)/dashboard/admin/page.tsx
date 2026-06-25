@@ -5,6 +5,11 @@ import { useReports } from "@/app/queries/reports";
 import { useRegions } from "@/app/queries/regions";
 import { useFloodRequestAnalytics } from "@/app/queries/flood-requests";
 import { PageHeader, StatCard, SectionCard, AlertRow, EmptyState, LoadingRows } from "@/app/(dashboard)/_components/DashboardUI";
+import ResponseAnalytics from "@/app/(dashboard)/_components/ResponseAnalytics";
+import SensorGauges from "@/app/(dashboard)/_components/SensorGauges";
+import FloodRiskBanner from "@/app/(dashboard)/_components/FloodRiskBanner";
+import RainfallChart from "@/app/(dashboard)/_components/RainfallChart";
+import WeatherForecast from "@/app/(dashboard)/_components/WeatherForecast";
 
 const ic = (d: string) => <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d={d} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 
@@ -39,6 +44,9 @@ export default function AdminOverview() {
             <a href="/dashboard/admin/alerts" className="btn-primary hidden sm:inline-flex px-5 py-2.5 text-[14px]">Issue Alert</a>
           </div>
         } />
+
+      {/* Flood Risk Assessment — top priority for authorities */}
+      <FloodRiskBanner city="Kathmandu" />
 
       {/* Primary KPI Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -82,6 +90,18 @@ export default function AdminOverview() {
           </div>
         </div>
       </SectionCard>
+
+      {/* Weather Intelligence — Rainfall + Forecast */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+        <RainfallChart city="Kathmandu" />
+        <WeatherForecast city="Kathmandu" />
+      </div>
+
+      {/* Analytics + Sensors */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+        <ResponseAnalytics />
+        <SensorGauges />
+      </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <SectionCard title="Active Alerts"

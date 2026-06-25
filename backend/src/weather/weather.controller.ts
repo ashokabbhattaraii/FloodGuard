@@ -32,4 +32,17 @@ export class WeatherController {
   ) {
     return this.weatherService.getForecast({ lat, lon, city });
   }
+
+  @Get('rainfall')
+  @ApiOperation({ summary: 'Get 48h hourly rainfall forecast with flood risk assessment' })
+  @ApiQuery({ name: 'city', required: false })
+  @ApiQuery({ name: 'lat', required: false })
+  @ApiQuery({ name: 'lon', required: false })
+  getHourlyRainfall(
+    @Query('lat') lat?: string,
+    @Query('lon') lon?: string,
+    @Query('city') city?: string,
+  ) {
+    return this.weatherService.getHourlyRainfall({ lat, lon, city });
+  }
 }

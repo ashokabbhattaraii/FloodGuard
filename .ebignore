@@ -1,0 +1,16 @@
+node_modules/
+backend/
+.git/
+.env
+*.md
+docs/
+app/
+src/
+*.ts
+*.tsx
+bun.lockb
+tsconfig.json
+tailwind.config.*
+postcss.config.*
+.next/cache/
+.next/dev/
