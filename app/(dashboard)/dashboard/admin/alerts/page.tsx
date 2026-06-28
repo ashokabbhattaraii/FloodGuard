@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useAlerts, useCreateAlert, useUpdateAlert } from '@/app/queries/alerts';
 import { useRegions } from '@/app/queries/regions';
 import { PageHeader, LoadingRows, EmptyState } from '@/app/(dashboard)/_components/DashboardUI';
@@ -35,24 +36,43 @@ export default function AlertConsole() {
     e.preventDefault();
     if (!regionId || !title.trim() || !description.trim()) return;
 
-    await createMutation.mutateAsync({
-      regionId,
-      severity,
-      title,
-      description,
-    });
+    try {
+      await createMutation.mutateAsync({
+        regionId,
+        severity,
+        title,
+        description,
+      });
 
-    // Reset form
-    setTitle('');
-    setDescription('');
-    setShowForm(false);
+      toast.success('Alert issued successfully', {
+        description: `${title} has been broadcast to the region.`,
+      });
+
+      // Reset form
+      setTitle('');
+      setDescription('');
+      setShowForm(false);
+    } catch (error: any) {
+      toast.error('Failed to issue alert', {
+        description: error?.message || 'Please try again.',
+      });
+    }
   };
 
   const handleResolveAlert = async (id: string) => {
-    await updateMutation.mutateAsync({
-      id,
-      data: { status: 'resolved' },
-    });
+    try {
+      await updateMutation.mutateAsync({
+        id,
+        data: { status: 'resolved' },
+      });
+      toast.success('Alert resolved', {
+        description: 'The alert has been marked as resolved.',
+      });
+    } catch (error: any) {
+      toast.error('Failed to resolve alert', {
+        description: error?.message || 'Please try again.',
+      });
+    }
   };
 
   if (!mounted) {

@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import Link from "next/link";
+import { useAuth } from "@/app/queries/auth";
+import { dashboardRootForRole } from "@/app/lib/auth-helpers";
 import ThemeToggle from "@/app/_components/theme/ThemeToggle";
 
 const navLinks = [
@@ -15,6 +18,10 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const auth = useAuth();
+
+  const isLoggedIn = auth.isSuccess && auth.data;
+  const dashboardPath = isLoggedIn ? dashboardRootForRole(auth.data?.role) : null;
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -60,10 +67,17 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-3 pr-1">
           <ThemeToggle />
-          <a href="/login"
-            className="btn-primary relative px-5 py-2 text-[13.5px]">
-            Sign in
-          </a>
+          {isLoggedIn && dashboardPath ? (
+            <Link href={dashboardPath}
+              className="btn-primary relative px-5 py-2 text-[13.5px]">
+              Dashboard
+            </Link>
+          ) : (
+            <a href="/login"
+              className="btn-primary relative px-5 py-2 text-[13.5px]">
+              Sign in
+            </a>
+          )}
         </div>
 
         <div className="flex md:hidden items-center gap-2">
@@ -85,10 +99,17 @@ export default function Navbar() {
           </a>
         ))}
         <div className="mt-2 pt-3 border-t border-app">
-          <a href="/login"
-            className="btn-primary w-full py-2.5 text-[14px]">
-            Sign in
-          </a>
+          {isLoggedIn && dashboardPath ? (
+            <Link href={dashboardPath}
+              className="btn-primary w-full py-2.5 text-[14px]">
+              Dashboard
+            </Link>
+          ) : (
+            <a href="/login"
+              className="btn-primary w-full py-2.5 text-[14px]">
+              Sign in
+            </a>
+          )}
         </div>
       </div>
     </header>

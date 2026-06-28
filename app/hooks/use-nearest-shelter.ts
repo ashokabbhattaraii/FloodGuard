@@ -46,7 +46,8 @@ export function useNearestShelter(autoLocate = false) {
 
   useEffect(() => {
     if (autoLocate) locate();
-  }, [autoLocate, locate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoLocate]);
 
   const shelters = Array.isArray(routesQuery.data) ? routesQuery.data : [];
 

@@ -63,6 +63,9 @@ model User {
   name                    String
   password                String
   role                    UserRole       @default(resident)
+  isApproved              Boolean        @default(true) // false for volunteers pending approval
+  approvedAt              DateTime?
+  approvedBy              String? // admin user id who approved
   regionId                String?
   notificationPreferences Json?
   createdAt               DateTime       @default(now())
@@ -75,18 +78,37 @@ model User {
 }
 
 model Region {
-  id          String    @id @default(uuid())
-  name        String
-  coordinates Json?
-  riskLevel   RiskLevel @default(low)
-  adminId     String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  alerts      Alert[]
-  reports     Report[]
-  sensors     Sensor[]
+  id               String             @id @default(uuid())
+  name             String
+  description      String?
+  coordinates      Json? // GeoJSON Polygon for boundaries
+  centerLat        Float?
+  centerLng        Float?
+  riskLevel        RiskLevel          @default(low)
+  adminId          String?
+  population       Int?
+  area             Float? // in sq km
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  alerts           Alert[]
+  reports          Report[]
+  sensors          Sensor[]
+  volunteers       RegionVolunteer[]
+  evacuationRoutes EvacuationRoute[]
 
   @@map("regions")
+}
+
+model RegionVolunteer {
+  id         String   @id @default(uuid())
+  regionId   String
+  region     Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  userId     String
+  assignedAt DateTime @default(now())
+  isActive   Boolean  @default(true)
+
+  @@unique([regionId, userId])
+  @@map("region_volunteers")
 }
 
 model Alert {
@@ -126,21 +148,37 @@ model Report {
 model Sensor {
   id           String     @id @default(uuid())
   regionId     String
-  region       Region     @relation(fields: [regionId], references: [id])
+  region       Region     @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  name         String
   type         SensorType
+  latitude     Float?
+  longitude    Float?
   currentValue Float
   threshold    Float
+  unit         String     @default("m") // meters for water level, mm for rainfall
+  isActive     Boolean    @default(true)
   lastUpdated  DateTime   @updatedAt
+  createdAt    DateTime   @default(now())
 
   @@map("sensors")
 }
 
 model EvacuationRoute {
-  id          String @id @default(uuid())
-  regionId    String
-  routeData   Json?
-  shelterName String
-  capacity    Int
+  id           String   @id @default(uuid())
+  regionId     String
+  region       Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  shelterName  String
+  address      String?
+  latitude     Float?
+  longitude    Float?
+  capacity     Int
+  currentCount Int      @default(0)
+  routeData    Json? // GeoJSON LineString for route path
+  facilities   Json? // Array of available facilities
+  contactPhone String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("evacuation_routes")
 }

@@ -430,7 +430,7 @@ export default function AdvancedMap({
   return (
     <div
       ref={containerRef}
-      className={`surface-card rounded-2xl overflow-hidden relative border border-app ${
+      className={`surface-card rounded-2xl overflow-hidden relative border border-app pointer-events-none ${
         fullscreen ? 'fixed inset-3 z-[2000] rounded-2xl' : ''
       }`}
     >
@@ -459,20 +459,20 @@ export default function AdvancedMap({
       `}</style>
 
       {/* Top-left: Search + Layers */}
-      <div className="absolute top-4 left-4 z-[999] flex flex-col gap-2.5 max-w-[270px]">
-        <form onSubmit={handleSearch} className="glass-2 rounded-xl p-1.5 border border-[var(--border)] shadow-md flex items-center gap-1.5">
+      <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-2.5 w-[270px] max-w-[calc(100vw-2rem)] pointer-events-auto">
+        <form onSubmit={handleSearch} className="glass-2 rounded-xl p-1.5 border border-[var(--border)] shadow-lg flex items-center gap-1.5">
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search place or address…"
             className="bg-transparent text-xs text-app px-2 py-1 outline-none flex-1 min-w-0"
           />
-          <button type="submit" disabled={searching} className="px-2.5 py-1.5 rounded-lg bg-accent text-white text-[11px] font-bold shrink-0 disabled:opacity-60">
+          <button type="submit" disabled={searching} className="px-2.5 py-1.5 rounded-lg bg-accent text-white text-[11px] font-bold shrink-0 disabled:opacity-60 hover:brightness-95">
             {searching ? '…' : 'Go'}
           </button>
         </form>
 
-        <div className="glass-2 rounded-xl p-3 border border-[var(--border)] shadow-md space-y-2">
+        <div className="glass-2 rounded-xl p-3 border border-[var(--border)] shadow-lg space-y-2">
           <h4 className="text-[11px] font-bold text-app uppercase tracking-wider mb-1 border-b border-[var(--border-soft)] pb-1">Map Layers</h4>
           {[
             { state: filterZones, set: setFilterZones, label: '⬣ Risk Zones' },
@@ -480,7 +480,7 @@ export default function AdvancedMap({
             { state: filterRequests, set: setFilterRequests, label: '🆘 SOS Requests' },
             { state: filterReports, set: setFilterReports, label: '🌊 Community Reports' },
           ].map((row) => (
-            <label key={row.label} className="flex items-center gap-2 text-xs text-app cursor-pointer">
+            <label key={row.label} className="flex items-center gap-2 text-xs text-app cursor-pointer hover:opacity-80 transition-opacity">
               <input type="checkbox" className="rounded accent-accent" checked={row.state} onChange={() => row.set(!row.state)} />
               {row.label}
             </label>
@@ -488,14 +488,14 @@ export default function AdvancedMap({
         </div>
 
         {/* Region jump */}
-        <div className="glass-2 rounded-xl p-2.5 border border-[var(--border)] shadow-md flex items-center gap-2">
+        <div className="glass-2 rounded-xl p-2.5 border border-[var(--border)] shadow-lg flex flex-col gap-2">
           <span className="text-[11px] font-bold text-app">Jump:</span>
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-wrap">
             {['kathmandu', 'pokhara', 'terai'].map((reg) => (
               <button
                 key={reg}
                 onClick={() => handleFlyTo(reg)}
-                className={`px-2 py-1 text-[10px] font-semibold rounded-md capitalize transition-all ${
+                className={`px-2.5 py-1.5 text-[10px] font-semibold rounded-md capitalize transition-all ${
                   activeRegion === reg ? 'bg-accent text-white' : 'bg-transparent text-app hover:bg-[var(--accent-soft)]'
                 }`}
               >
@@ -507,24 +507,24 @@ export default function AdvancedMap({
       </div>
 
       {/* Top-right: tools */}
-      <div className="absolute top-4 right-4 z-[999] flex flex-col gap-2 items-end">
-        <div className="flex gap-2">
+      <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-2 items-end pointer-events-auto">
+        <div className="flex gap-2 flex-wrap justify-end">
           {role === 'resident' && (
             <button
               onClick={routeToNearestShelter}
               disabled={routing}
-              className="px-3 h-10 rounded-xl glass-2 border border-[var(--border)] shadow-md flex items-center gap-1.5 text-app text-[12px] font-semibold hover:bg-[var(--accent-soft)] transition-all disabled:opacity-60"
+              className="px-3 h-10 rounded-xl glass-2 border border-[var(--border)] shadow-lg flex items-center gap-1.5 text-app text-[11px] font-semibold hover:bg-[var(--accent-soft)] transition-all disabled:opacity-60"
               title="Route to nearest shelter"
             >
               🏢 {routing ? 'Routing…' : 'Nearest Shelter'}
             </button>
           )}
-          <button onClick={() => setFullscreen((v) => !v)} className="w-10 h-10 rounded-xl glass-2 border border-[var(--border)] shadow-md flex items-center justify-center hover:bg-[var(--accent-soft)] text-app transition-all" title="Fullscreen">
+          <button onClick={() => setFullscreen((v) => !v)} className="w-10 h-10 rounded-xl glass-2 border border-[var(--border)] shadow-lg flex items-center justify-center hover:bg-[var(--accent-soft)] text-app transition-all" title="Fullscreen">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               {fullscreen ? <path d="M9 9H5V5M15 9h4V5M9 15H5v4M15 15h4v4" /> : <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />}
             </svg>
           </button>
-          <button onClick={handleLocateMe} className="w-10 h-10 rounded-xl glass-2 border border-[var(--border)] shadow-md flex items-center justify-center hover:bg-[var(--accent-soft)] text-app transition-all" title="Locate Me">
+          <button onClick={handleLocateMe} className="w-10 h-10 rounded-xl glass-2 border border-[var(--border)] shadow-lg flex items-center justify-center hover:bg-[var(--accent-soft)] text-app transition-all" title="Locate Me">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" />
               <path d="M12 2v2M12 20v2M2 12h2M20 12h2" />
@@ -533,7 +533,7 @@ export default function AdvancedMap({
         </div>
 
         {/* Base layer switcher */}
-        <div className="glass-2 rounded-xl p-1 border border-[var(--border)] shadow-md flex gap-1">
+        <div className="glass-2 rounded-xl p-1 border border-[var(--border)] shadow-lg flex gap-1">
           {(Object.keys(BASE_LAYERS) as BaseLayer[]).map((key) => (
             <button
               key={key}
@@ -550,7 +550,7 @@ export default function AdvancedMap({
 
       {/* Route info banner */}
       {nearest && (
-        <div className="absolute bottom-4 right-4 z-[999] glass-2 rounded-xl p-3 border border-[var(--border)] shadow-md max-w-[240px]">
+        <div className="absolute bottom-4 right-4 z-[1000] glass-2 rounded-xl p-3 border border-[var(--border)] shadow-lg max-w-[240px] pointer-events-auto">
           <div className="flex items-start justify-between gap-2">
             <div>
               <p className="text-[10px] uppercase font-bold text-app-muted tracking-wide">Route to</p>
@@ -559,19 +559,19 @@ export default function AdvancedMap({
                 {formatDistance(nearest.distance)} • {formatDuration(nearest.duration)}
               </p>
             </div>
-            <button onClick={clearRoute} className="text-app-muted hover:text-app text-xs" title="Clear route">✕</button>
+            <button onClick={clearRoute} className="text-app-muted hover:text-app text-xs transition-colors" title="Clear route">✕</button>
           </div>
         </div>
       )}
 
       {/* Helper */}
-      <div className="absolute bottom-4 left-4 z-[999] glass-2 rounded-xl p-2.5 border border-[var(--border)] max-w-[260px]">
+      <div className="absolute bottom-4 left-4 z-[1000] glass-2 rounded-xl p-2.5 border border-[var(--border)] shadow-lg max-w-[260px] pointer-events-auto">
         <p className="text-[10px] text-app-muted leading-tight">
           💡 <strong className="text-app">Tip:</strong> Click the map to geotag a report or SOS. Use popups to get live directions.
         </p>
       </div>
 
-      <div ref={mapRef} className={`w-full ${fullscreen ? 'h-full' : heightClass} z-10`} />
+      <div ref={mapRef} className={`w-full ${fullscreen ? 'h-full' : heightClass} z-10 pointer-events-auto`} />
 
       {!loaded && (
         <div className="absolute inset-0 bg-app/80 backdrop-blur-md z-[1000] flex flex-col items-center justify-center gap-3">

@@ -12,6 +12,7 @@ import SensorGauges from "@/app/(dashboard)/_components/SensorGauges";
 import PreparednessTips from "@/app/(dashboard)/_components/PreparednessTips";
 import FloodRiskBanner from "@/app/(dashboard)/_components/FloodRiskBanner";
 import RainfallChart from "@/app/(dashboard)/_components/RainfallChart";
+import FloodForecastWidget from "@/app/(dashboard)/_components/FloodForecastWidget";
 
 const ic = (d: string) => <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d={d} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 
@@ -123,6 +124,11 @@ export default function ResidentOverview() {
           icon={ic("M10 2a6 6 0 016 6c0 4-6 10-6 10S4 12 4 8a6 6 0 016-6z")} />
         <StatCard label="Safe Shelters" value={shelterCount} accent="#16a34a" loading={shelters.isLoading}
           icon={ic("M10 3l7 6v8H3V9l7-6z")} />
+      </div>
+
+      {/* AI-Powered Flood Forecast */}
+      <div className="mb-6">
+        <FloodForecastWidget />
       </div>
 
       {/* Rainfall forecast — full width for maximum visibility */}

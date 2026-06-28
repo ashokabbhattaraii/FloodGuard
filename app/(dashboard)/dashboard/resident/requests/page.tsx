@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { floodRequestsService } from '@/app/services';
 
 const REQUEST_TYPES = ['evacuation', 'rescue', 'relief', 'medical', 'shelter'] as const;
@@ -72,17 +73,34 @@ export function ResidentRequestsPageContent() {
     const nextSafe = !isSafe;
     setIsSafe(nextSafe);
     localStorage.setItem('fg_resident_safe', String(nextSafe));
-    
+
+    if (nextSafe) {
+      toast.success('Status updated', {
+        description: 'You\'ve been marked as safe.',
+      });
+    } else {
+      toast.warning('Status updated', {
+        description: 'You\'ve been marked as needing help.',
+      });
+    }
+
     // If marking safe, offer to cancel active requests
     if (nextSafe) {
       const active = requests.filter(r => r.status === 'pending' || r.status === 'assigned' || r.status === 'in_progress');
       if (active.length > 0 && confirm(`You have ${active.length} active help request(s). Would you like to cancel them?`)) {
+        let cancelled = 0;
         for (const req of active) {
           try {
             await floodRequestsService.update(req.id, { status: 'cancelled' });
+            cancelled++;
           } catch (e) {
             console.error('Failed to cancel request:', e);
           }
+        }
+        if (cancelled > 0) {
+          toast.success(`${cancelled} request(s) cancelled`, {
+            description: 'Your active requests have been cancelled.',
+          });
         }
         fetchRequests();
       }
@@ -175,10 +193,16 @@ export function ResidentRequestsPageContent() {
         ...form,
         peopleCount: form.peopleCount ? Number(form.peopleCount) : undefined,
       });
+      toast.success('Help request submitted', {
+        description: 'Emergency responders have been notified of your request.',
+      });
       setMsg('Request submitted successfully!');
       setForm({ type: 'rescue', priority: 'medium', title: '', description: '', location: '', peopleCount: '', contactPhone: '', latitude: undefined, longitude: undefined });
       fetchRequests();
     } catch (err: any) {
+      toast.error('Failed to submit request', {
+        description: err.message || 'Please try again.',
+      });
       setMsg(err.message || 'Failed to submit request');
     } finally {
       setSubmitting(false);

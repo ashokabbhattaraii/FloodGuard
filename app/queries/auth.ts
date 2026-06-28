@@ -7,6 +7,10 @@ export function useAuth() {
     queryKey: ['auth', 'me'],
     queryFn: () => authService.getMe(),
     retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     enabled: typeof window !== 'undefined' && !!localStorage.getItem(config.auth.tokenKey),
   });
 }

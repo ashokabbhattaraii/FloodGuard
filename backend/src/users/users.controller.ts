@@ -6,6 +6,7 @@ import {
   Param,
   Body,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -46,5 +47,26 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete user (admin only)' })
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Get('pending/volunteers')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Get pending volunteer approvals (admin only)' })
+  getPendingVolunteers() {
+    return this.usersService.findPendingVolunteers();
+  }
+
+  @Patch(':id/approve')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Approve volunteer (admin only)' })
+  approveVolunteer(@Param('id') id: string, @Request() req: any) {
+    return this.usersService.approveVolunteer(id, req.user.userId);
+  }
+
+  @Delete(':id/reject')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Reject volunteer application (admin only)' })
+  rejectVolunteer(@Param('id') id: string) {
+    return this.usersService.rejectVolunteer(id);
   }
 }

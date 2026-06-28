@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { reportsService, uploadsService } from '@/app/services';
 import {
   EmptyState,
@@ -244,7 +245,10 @@ export function ReportsPageContent() {
         setUploadingPhoto(true);
         try {
           photoUrl = await uploadsService.uploadFile(photoFile);
-        } catch {
+        } catch (uploadError: any) {
+          toast.error('Photo upload failed', {
+            description: uploadError?.message || 'Please try again.',
+          });
           setError('Failed to upload photo. Please try again.');
           setSubmitting(false);
           setUploadingPhoto(false);
@@ -263,6 +267,9 @@ export function ReportsPageContent() {
         waterLevel: waterLevel ? parseFloat(waterLevel) : undefined,
       });
 
+      toast.success('Report submitted successfully', {
+        description: 'Your flood report has been sent to local authorities.',
+      });
       setSuccess('Flood report submitted. You can track it in the list below.');
       setDescription('');
       setWaterLevel('');
@@ -270,6 +277,9 @@ export function ReportsPageContent() {
       await fetchReports();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : undefined;
+      toast.error('Failed to submit report', {
+        description: msg || 'Please ensure you are logged in and try again.',
+      });
       setError(msg || 'Failed to submit. Ensure you are logged in.');
     } finally {
       setSubmitting(false);

@@ -66,19 +66,26 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="auth-card-shell w-full max-w-[1080px] min-h-[660px] rounded-[18px] overflow-hidden flex border border-[var(--glass-border)] shadow-[var(--shadow-soft)]" style={{ background: "var(--bg-elevated)" }}>
 
           {/* LEFT — Form side */}
-          <div className="flex-1 flex flex-col px-6 sm:px-12 py-8 sm:py-10 relative">
-            {/* Logo top */}
-            <Link href="/" className="flex items-center gap-2.5 mb-12">
-              <div className="w-9 h-9 rounded-[10px] bg-[var(--accent)] flex items-center justify-center shadow-[0_14px_28px_-18px_rgba(3,105,161,0.9)]">
-                <svg width="14" height="14" viewBox="0 0 13 13" fill="none">
-                  <path d="M6.5 1.5C4 1.5 1.5 4 1.5 7C1.5 9.5 3.8 11.5 6.5 11.5C9.2 11.5 11.5 9.5 11.5 7C11.5 4 9 1.5 6.5 1.5Z" fill="white" opacity="0.9" />
-                </svg>
+          <div className="flex-1 flex flex-col px-6 sm:px-12 py-6 sm:py-10 relative">
+            {/* Logo top + Theme toggle for mobile */}
+            <div className="flex items-center justify-between mb-8 sm:mb-12">
+              <Link href="/" className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-[10px] bg-[var(--accent)] flex items-center justify-center shadow-[0_14px_28px_-18px_rgba(3,105,161,0.9)]">
+                  <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                    <path d="M16 6C13 6 10 8 9 11C8 14 9 16 10 17.5C11 19 12.5 20 14 21C15 21.7 15.5 22.5 16 24C16.5 22.5 17 21.7 18 21C19.5 20 21 19 22 17.5C23 16 24 14 23 11C22 8 19 6 16 6Z" fill="white" opacity="0.95"/>
+                    <path d="M12 18C13 17 14.5 16.5 16 16.5C17.5 16.5 19 17 20 18" stroke="#7c7cff" strokeWidth="1.8" strokeLinecap="round"/>
+                    <circle cx="16" cy="13" r="2.5" fill="#7c7cff" opacity="0.8"/>
+                  </svg>
+                </div>
+                <div>
+                  <span className="block text-app font-[700] text-[16px]">FloodGuard</span>
+                  <span className="block text-[11px] text-app-muted">Flood response network</span>
+                </div>
+              </Link>
+              <div className="lg:hidden">
+                <ThemeToggle />
               </div>
-              <div>
-                <span className="block text-app font-[700] text-[16px]">FloodGuard</span>
-                <span className="block text-[11px] text-app-muted">Flood response network</span>
-              </div>
-            </Link>
+            </div>
 
             {/* Form content with animation ref */}
             <div ref={formRef} className="flex-1 flex flex-col justify-center max-w-[380px]">
@@ -86,8 +93,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             </div>
 
             {/* Bottom footer */}
-            <div className="flex items-center justify-between pt-6 text-[13px] text-app-muted">
-              <span>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 text-[13px] text-app-muted">
+              <span className="text-center sm:text-left">
                 {isLogin ? "No account? " : "Have an account? "}
                 <button
                   onClick={() => switchTo(isLogin ? "/register" : "/login")}
@@ -96,7 +103,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                   {isLogin ? "Sign up" : "Sign in"}
                 </button>
               </span>
-              <span>Terms & Privacy</span>
+              <span className="text-center sm:text-right">Terms & Privacy</span>
             </div>
           </div>
 

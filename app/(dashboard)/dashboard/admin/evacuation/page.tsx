@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { toast } from 'sonner';
 import { useRegions } from '@/app/queries/regions';
 import {
   useEvacuationRoutes,
@@ -105,20 +106,40 @@ export default function AdminEvacuation() {
       routeData: payloadRouteData,
     };
 
-    if (editingId) {
-      await updateMutation.mutateAsync({ id: editingId, data: payload });
-    } else {
-      await createMutation.mutateAsync(payload);
+    try {
+      if (editingId) {
+        await updateMutation.mutateAsync({ id: editingId, data: payload });
+        toast.success('Shelter updated', {
+          description: `${shelterName} has been updated successfully.`,
+        });
+      } else {
+        await createMutation.mutateAsync(payload);
+        toast.success('Shelter created', {
+          description: `${shelterName} has been added to the system.`,
+        });
+      }
+      setIsFormOpen(false);
+      setEditingId(null);
+    } catch (error: any) {
+      toast.error(editingId ? 'Failed to update shelter' : 'Failed to create shelter', {
+        description: error?.message || 'Please try again.',
+      });
     }
-    
-    setIsFormOpen(false);
-    setEditingId(null);
   };
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this evacuation center?')) {
-      await deleteMutation.mutateAsync(id);
-      if (selectedRouteId === id) setSelectedRouteId(null);
+      try {
+        await deleteMutation.mutateAsync(id);
+        toast.success('Shelter deleted', {
+          description: 'Evacuation center has been removed from the system.',
+        });
+        if (selectedRouteId === id) setSelectedRouteId(null);
+      } catch (error: any) {
+        toast.error('Failed to delete shelter', {
+          description: error?.message || 'Please try again.',
+        });
+      }
     }
   };
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { floodRequestsService } from '@/app/services';
 import { useUsers } from '@/app/queries/users';
 
@@ -41,8 +42,15 @@ export default function AdminRequestsPage() {
     setActionLoading(id);
     try {
       await floodRequestsService.update(id, { status });
+      toast.success('Request status updated', {
+        description: `Status changed to ${status}.`,
+      });
       fetchRequests();
-    } catch {}
+    } catch (error: any) {
+      toast.error('Failed to update status', {
+        description: error?.message || 'Please try again.',
+      });
+    }
     setActionLoading(null);
   };
 
@@ -51,10 +59,14 @@ export default function AdminRequestsPage() {
     setActionLoading(requestId);
     try {
       await floodRequestsService.assign(requestId, volunteerId);
-      alert('Volunteer assigned successfully!');
+      toast.success('Volunteer assigned successfully', {
+        description: 'The volunteer has been notified.',
+      });
       fetchRequests();
     } catch (e: any) {
-      alert('Failed to assign volunteer: ' + (e.response?.data?.message || e.message));
+      toast.error('Failed to assign volunteer', {
+        description: e.response?.data?.message || e.message || 'Please try again.',
+      });
     } finally {
       setActionLoading(null);
     }

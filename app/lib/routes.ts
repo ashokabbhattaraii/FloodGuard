@@ -20,6 +20,7 @@ export const routes = {
       analytics: '/dashboard/admin/analytics',
       requests: '/dashboard/admin/requests',
       evacuation: '/dashboard/admin/evacuation',
+      users: '/dashboard/admin/users',
     },
     volunteer: {
       root: '/dashboard/volunteer',

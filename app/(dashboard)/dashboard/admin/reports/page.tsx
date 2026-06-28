@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useReports, useUpdateReport } from '@/app/queries/reports';
 import { PageHeader, LoadingRows, EmptyState } from '@/app/(dashboard)/_components/DashboardUI';
 
@@ -21,7 +22,16 @@ export default function ReportsReview() {
   const updateMutation = useUpdateReport();
 
   const handleReviewReport = async (id: string, status: 'verified' | 'rejected') => {
-    await updateMutation.mutateAsync({ id, status });
+    try {
+      await updateMutation.mutateAsync({ id, status });
+      toast.success(`Report ${status}`, {
+        description: `The report has been marked as ${status}.`,
+      });
+    } catch (error: any) {
+      toast.error('Failed to update report', {
+        description: error?.message || 'Please try again.',
+      });
+    }
   };
 
   const getInitials = (name: string) => {

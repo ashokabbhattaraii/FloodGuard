@@ -1,6 +1,6 @@
 import Navbar from "@/app/_components/landing/Navbar";
 import HeroSection from "@/app/_components/landing/HeroSection";
-import StatsStrip from "@/app/_components/landing/StatsStrip";
+import LiveStatsStrip from "@/app/_components/landing/LiveStatsStrip";
 import HowItWorks from "@/app/_components/landing/HowItWorks";
 import AlertsPreview from "@/app/_components/landing/AlertsPreview";
 import FeaturesGrid from "@/app/_components/landing/FeaturesGrid";
@@ -13,7 +13,7 @@ export default function LandingPage() {
     <main className="relative overflow-x-hidden">
       <Navbar />
       <HeroSection />
-      <StatsStrip />
+      <LiveStatsStrip />
       <HowItWorks />
       <AlertsPreview />
       <FeaturesGrid />

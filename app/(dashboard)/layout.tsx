@@ -34,6 +34,7 @@ const navByRole: Record<string, NavItem[]> = {
     { href: routes.dashboard.admin.requests, label: "SOS Queue", icon: icon("M12 9v4l3 3M12 3a9 9 0 100 18 9 9 0 000-18z") },
     { href: routes.dashboard.admin.evacuation, label: "Shelters", icon: icon("M10 3l7 6v8H3V9l7-6zM8 17v-5h4v5") },
     { href: routes.dashboard.admin.regions, label: "Regions", icon: icon("M10 2a6 6 0 016 6c0 4-6 10-6 10S4 12 4 8a6 6 0 016-6zM10 6a2 2 0 100 4 2 2 0 000-4z") },
+    { href: routes.dashboard.admin.users, label: "User Management", icon: icon("M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z") },
     { href: routes.dashboard.admin.analytics, label: "Analytics", icon: icon("M4 16V8M9 16V4M14 16v-6") },
   ],
   volunteer: [
@@ -51,8 +52,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const auth = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (typeof window !== "undefined" && !localStorage.getItem("floodguard_token")) {
       router.replace("/login");
     }
@@ -87,9 +90,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Logo */}
           <div className="flex items-center gap-3 px-4 h-16 border-b border-app">
             <div className="w-9 h-9 rounded-[10px] bg-[var(--accent)] flex items-center justify-center shrink-0 shadow-[0_14px_28px_-18px_rgba(3,105,161,0.9)]">
-              <svg width="15" height="15" viewBox="0 0 13 13" fill="none">
-                <path d="M6.5 1.5C4 1.5 1.5 4 1.5 7C1.5 9.5 3.8 11.5 6.5 11.5C9.2 11.5 11.5 9.5 11.5 7C11.5 4 9 1.5 6.5 1.5Z" fill="white" opacity="0.9" />
-                <path d="M3.5 8C4 6.8 5 6 6.5 6C8 6 9 6.8 9.5 8" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                <path d="M16 6C13 6 10 8 9 11C8 14 9 16 10 17.5C11 19 12.5 20 14 21C15 21.7 15.5 22.5 16 24C16.5 22.5 17 21.7 18 21C19.5 20 21 19 22 17.5C23 16 24 14 23 11C22 8 19 6 16 6Z" fill="white" opacity="0.95"/>
+                <path d="M12 18C13 17 14.5 16.5 16 16.5C17.5 16.5 19 17 20 18" stroke="#7c7cff" strokeWidth="1.8" strokeLinecap="round"/>
+                <circle cx="16" cy="13" r="2.5" fill="#7c7cff" opacity="0.8"/>
               </svg>
             </div>
             <div className={`min-w-0 ${collapsed ? "lg:hidden" : ""}`}>
@@ -169,7 +173,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </header>
 
           <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] w-full mx-auto">
-            {auth.isLoading ? (
+            {!mounted || auth.isLoading ? (
               <div className="flex items-center justify-center h-64">
                 <span className="text-app-muted text-[14px] animate-pulse">Loading dashboard…</span>
               </div>

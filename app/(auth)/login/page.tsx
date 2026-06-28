@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
+import { toast } from "sonner";
 import { useLogin } from "@/app/queries/auth";
 import { authService } from "@/app/services/auth";
 import { dashboardRootForRole } from "@/app/lib/auth-helpers";
@@ -36,7 +37,15 @@ export default function LoginPage() {
         onSuccess: async (data) => {
           setRedirecting(true);
           const role = data?.user?.role ?? (await authService.getMe().catch(() => null))?.role;
+          toast.success('Welcome back!', {
+            description: `Signed in as ${data?.user?.name || email}`,
+          });
           router.push(dashboardRootForRole(role));
+        },
+        onError: (error: any) => {
+          toast.error('Authentication failed', {
+            description: error?.response?.data?.message || 'Invalid email or password.',
+          });
         },
       }
     );

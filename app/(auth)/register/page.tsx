@@ -3,13 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
+import { toast } from "sonner";
 import { useRegister } from "@/app/queries/auth";
 import { dashboardRootForRole } from "@/app/lib/auth-helpers";
 
 const ROLES = [
   { value: "resident", label: "Resident", desc: "Report floods, receive alerts, request help" },
-  { value: "volunteer", label: "Volunteer Responder", desc: "Claim SOS requests, deliver relief" },
-  { value: "admin", label: "Authority Admin", desc: "Manage alerts, regions, and coordination" },
+  { value: "volunteer", label: "Volunteer Responder", desc: "Claim SOS requests, deliver relief (requires admin approval)" },
 ] as const;
 
 export default function RegisterPage() {
@@ -41,7 +41,22 @@ export default function RegisterPage() {
       {
         onSuccess: (data) => {
           setRedirecting(true);
-          router.push(dashboardRootForRole(data?.user?.role ?? role));
+          if (role === 'volunteer') {
+            toast.success('Account created successfully!', {
+              description: 'Your volunteer account is pending admin approval. You will be notified once approved.',
+            });
+            router.push('/login');
+          } else {
+            toast.success('Account created successfully!', {
+              description: `Welcome to FloodGuard, ${name}`,
+            });
+            router.push(dashboardRootForRole(data?.user?.role ?? role));
+          }
+        },
+        onError: (error: any) => {
+          toast.error('Registration failed', {
+            description: error?.response?.data?.message || 'Please try again.',
+          });
         },
       }
     );
@@ -114,13 +129,13 @@ export default function RegisterPage() {
         {/* Role selection */}
         <div className="af-item">
           <label className="block text-[13px] text-app font-semibold mb-3">I am a…</label>
-          <div className="grid gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {ROLES.map((r) => (
               <button
                 key={r.value}
                 type="button"
                 onClick={() => setRole(r.value)}
-                className={`flex items-center gap-3.5 px-4 py-3.5 rounded-[10px] border text-left transition-all duration-200 ${
+                className={`flex flex-col sm:flex-row items-start sm:items-center gap-3 px-4 py-3.5 rounded-[10px] border text-left transition-all duration-200 ${
                   role === r.value
                     ? "border-[var(--accent)] bg-[var(--accent-soft)] shadow-[0_0_0_3px_rgba(3,105,161,0.12)]"
                     : "border-app bg-[var(--glass-bg-2)] hover:border-[var(--accent)] hover:bg-[var(--accent-soft)]"
@@ -131,9 +146,9 @@ export default function RegisterPage() {
                 }`}>
                   {role === r.value && <span className="w-2 h-2 rounded-full bg-[var(--accent)]" />}
                 </span>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="text-[14px] font-semibold text-app">{r.label}</p>
-                  <p className="text-[12px] text-app-muted">{r.desc}</p>
+                  <p className="text-[12px] text-app-muted leading-snug mt-0.5">{r.desc}</p>
                 </div>
               </button>
             ))}
