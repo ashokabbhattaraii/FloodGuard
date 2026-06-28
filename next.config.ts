@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Removed standalone output for EB deployment
+  // Standard deployment for Elastic Beanstalk
+  // Standalone causes health check issues
 };
 
 export default nextConfig;
