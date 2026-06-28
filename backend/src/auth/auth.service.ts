@@ -58,6 +58,9 @@ export class AuthService {
         role: true,
         regionId: true,
         notificationPreferences: true,
+        isApproved: true,
+        approvedAt: true,
+        approvedBy: true,
         createdAt: true,
       },
     });

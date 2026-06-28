@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useAuth } from "@/app/queries/auth";
+import PendingApprovalBanner from "@/app/_components/dashboard/PendingApprovalBanner";
 
 const RouteMap = dynamic(() => import("@/app/_components/ui/RouteMap"), {
   ssr: false,
@@ -87,6 +88,9 @@ export default function VolunteerOverview() {
 
   return (
     <div className="relative">
+      {/* Pending Approval Banner */}
+      <PendingApprovalBanner />
+
       {/* Top Banner Alert depending on availability */}
       <div
         className={`mb-6 p-4 rounded-[12px] border transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-4 ${

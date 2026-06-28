@@ -41,17 +41,12 @@ export default function RegisterPage() {
       {
         onSuccess: (data) => {
           setRedirecting(true);
-          if (role === 'volunteer') {
-            toast.success('Account created successfully!', {
-              description: 'Your volunteer account is pending admin approval. You will be notified once approved.',
-            });
-            router.push('/login');
-          } else {
-            toast.success('Account created successfully!', {
-              description: `Welcome to FloodGuard, ${name}`,
-            });
-            router.push(dashboardRootForRole(data?.user?.role ?? role));
-          }
+          toast.success('Account created successfully!', {
+            description: role === 'volunteer'
+              ? 'Your volunteer account is pending admin approval. You can still access the dashboard with limited permissions.'
+              : `Welcome to FloodGuard, ${name}`,
+          });
+          router.push(dashboardRootForRole(data?.user?.role ?? role));
         },
         onError: (error: any) => {
           toast.error('Registration failed', {
