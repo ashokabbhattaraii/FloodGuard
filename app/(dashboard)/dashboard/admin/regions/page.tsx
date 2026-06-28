@@ -70,10 +70,10 @@ export default function RegionManagement() {
 
   const createMutation = useMutation({
     mutationFn: (data: any) => regionsService.create(data),
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ['regions'] });
       toast.success('Region created successfully', {
-        description: `${data.name} has been added to the monitoring system.`,
+        description: `${data?.name || 'Region'} has been added to the monitoring system.`,
       });
       setIsFormOpen(false);
       resetForm();
