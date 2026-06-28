@@ -125,6 +125,8 @@ async function main() {
     },
   });
 
+  //test
+
   const kathmanduValley = await prisma.region.upsert({
     where: { id: '10000000-0000-0000-0000-000000000003' },
     update: {},
