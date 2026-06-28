@@ -87,11 +87,11 @@ export default function RegionManagement() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: any }) => regionsService.update(id, data),
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ['regions'] });
       queryClient.invalidateQueries({ queryKey: ['regions', editingId] });
       toast.success('Region updated successfully', {
-        description: `${data.name} has been updated.`,
+        description: `${data?.name || 'Region'} has been updated.`,
       });
       setIsFormOpen(false);
       setEditingId(null);
