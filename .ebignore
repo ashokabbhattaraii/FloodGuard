@@ -8,9 +8,8 @@ bun.lockb
 .claude/
 .antigravitycli/
 .agents/
-node_modules/
 *.log
 .DS_Store
-.next/cache/
-.next/trace
-.next/diagnostics/
+
+# Don't exclude node_modules - let EB install them
+# Don't exclude .next - we need the build output

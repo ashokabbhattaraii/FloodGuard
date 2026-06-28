@@ -5,9 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "postinstall": "npm run build"
+    "start": "next start -p $PORT",
+    "lint": "eslint"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
