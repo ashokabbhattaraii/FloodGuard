@@ -1,299 +1,732 @@
 # FloodGuard — Work Breakdown Structure (4 Members)
-# TASK 1 ONLY — Frontend + Backend + AWS Deployment (EC2/EB + RDS + S3)
+## TASK 1 — Equal Distribution with Full AWS Experience for All
 
-> CT071-3-3-DDAC Group Project | Problem #4: Flood Early Warning & Community Alert System
-> **Task 1 (30 marks):** Frontend + Backend + AWS Compute (Elastic Beanstalk) + RDS PostgreSQL + S3
-> **Task 2 (20 marks):** SNS, SES, Lambda, CloudWatch (separate scope — not in this breakdown)
+> **CT071-3-3-DDAC Group Project** | Problem #4: Flood Early Warning & Community Alert System
 > 
-> Each member owns **minimum 2 unique, non-overlapping features** (Rule 7 & 8)
-> **System Roles:** Public/Resident, Local Authority/Admin, Super Admin (per system.md)
+> **Task 1 (30 marks):** Frontend + Backend + AWS (EB + RDS + S3)
+> 
+> **Distribution Strategy:** Each member owns 2 features + 1 AWS service lead + deploys own code
+> 
+> **Learning Goal:** All 4 members gain hands-on experience with Elastic Beanstalk, RDS PostgreSQL, S3, and IAM
 
 ---
 
-## Summary Matrix (Task 1)
+## AWS Ownership Matrix (Equal Learning)
 
-| Member | Primary Role Focus | Features (min 2) | Frontend | Backend | Database Tables | AWS Services |
-|--------|-----------|-------------------|----------|---------|----------------|--------------|
-| **Member 1** | Resident (Public) | Flood Risk Map + Weather Dashboard, Report Submission | 3 pages | 3 modules | regions, sensors, reports | EC2, RDS, S3 |
-| **Member 2** | Resident (Emergency) | SOS Request Management, Evacuation & Shelter System | 4 pages | 2 modules | flood_requests, evacuation_routes | EC2, RDS, S3 |
-| **Member 3** | Admin (Authority) | Alert Management, Report Review & Region Management | 5 pages | 3 modules | alerts, reports, regions | EC2, RDS, S3 |
-| **Member 4** | Super Admin / Infra | User Management, System Config & AWS Deployment | 2 pages | 2 modules | users, system_config | EC2, RDS, S3, EB (setup) |
+| Member | Role Focus | AWS Service Lead | What They Setup | What They Learn (Everyone) |
+|--------|-----------|------------------|-----------------|---------------------------|
+| **Member 1** | Resident (Info) | **S3 Lead** | S3 bucket, CORS, presigned URLs, IAM policy | ✅ EB deploy, ✅ RDS connection, ✅ S3 usage, ✅ IAM |
+| **Member 2** | Volunteer | **RDS Lead** | PostgreSQL instance, security groups, Prisma schema, migrations | ✅ EB deploy, ✅ RDS usage, ✅ S3 usage, ✅ IAM |
+| **Member 3** | Admin | **EB Lead** | Elastic Beanstalk environments, health checks, deployment pipeline | ✅ EB deploy, ✅ RDS connection, ✅ S3 usage, ✅ IAM |
+| **Member 4** | Auth/Infrastructure | **IAM/Security Lead** | IAM roles, security groups, environment variables, CloudWatch logs | ✅ EB deploy, ✅ RDS connection, ✅ S3 usage, ✅ IAM |
+
+> **Key Principle:** One person **leads** setup of their AWS service (documents it, troubleshoots first), but **all 4 members use all services** in their own features.
 
 ---
 
-## Member 1 — Resident Role (Public-Facing Features)
+## Summary Matrix
 
-### Role: Public / Resident
-> The everyday user who receives flood warnings and needs to stay safe.
+| Member | Role | Features (2) | Frontend Pages | Backend Modules | DB Tables | AWS Lead | LOC Est. |
+|--------|------|--------------|---------------|----------------|-----------|----------|----------|
+| **M1** | Resident | Map + Weather, Report Submission | 3 | 3 | regions, sensors, reports | **S3** | ~2,100 |
+| **M2** | Volunteer | SOS Requests, Shelters | 4 | 2 | flood_requests, shelters | **RDS** | ~2,050 |
+| **M3** | Admin | Alerts, Report Review + Regions | 5 | 3 | alerts, reports (review), regions | **EB** | ~2,400 |
+| **M4** | Auth | User Management, Authentication | 3 | 2 | users, system_logs | **IAM** | ~2,150 |
+
+---
+
+## Member 1 — Resident (Public Features) + S3 Lead
+
+### Role: Resident / Public
+> Everyday users who need flood information and want to report incidents.
 
 ### Feature 1: Real-Time Flood Risk Map + Weather Dashboard
+
 | Item | Detail |
 |------|--------|
-| **What** | Interactive map showing flood risk zones (color-coded by severity), weather forecast display with rainfall charts, sensor gauge readings. Map component uses Mapbox/Leaflet to display regions with color-coded risk levels (low/moderate/high/severe). |
-| **Frontend Pages** | `/dashboard/resident` (home with FloodRiskBanner), `/dashboard/resident/map` (interactive map), `WeatherForecast.tsx`, `RainfallChart.tsx`, `SensorGauges.tsx`, `FloodRiskBanner.tsx` |
-| **Backend Modules** | `weather/` (weather.controller, weather.service — fetch weather data, rainfall predictions), `regions/` (regions.controller partial — GET endpoints for map data) |
-| **DB Tables Used** | `regions` (read risk levels, geofences), `sensors` (read current readings), `alerts` (read active alerts for map overlay) |
-| **API Endpoints** | `GET /api/weather/:regionId` (weather forecast + rainfall), `GET /api/regions` (list all regions with risk status), `GET /api/regions/:id/status` (detailed region status) |
-| **AWS Services** | EC2 (via Elastic Beanstalk compute), RDS PostgreSQL (read regions/sensors/alerts) |
-| **Lines of Code Estimate** | ~800 lines (frontend map + charts + components) + ~400 lines (backend weather module + region GET endpoints) |
+| **What** | Interactive map showing flood risk zones (color-coded by severity). Weather forecast with rainfall charts. Sensor gauge readings. Map uses Mapbox/Leaflet. Weather data integration with charts (Chart.js/Recharts). |
+| **Frontend** | `/dashboard/resident` (home), `/dashboard/resident/map` (interactive map), `/dashboard/resident/weather` (weather dashboard with charts) |
+| **Backend** | `weather/` module (weather.controller, weather.service), `regions/` module (regions.controller, regions.service — GET endpoints), `sensors/` module (sensors.controller, sensors.service — GET readings) |
+| **Database** | `regions` (read: name, boundary, riskLevel), `sensors` (read: location, type, currentReading), `alerts` (read: active alerts) |
+| **API Endpoints** | `GET /api/weather/:regionId`, `GET /api/weather/current`, `GET /api/regions`, `GET /api/regions/:id`, `GET /api/sensors`, `GET /api/sensors/:id` |
+| **AWS Used** | EB (deploy), RDS (read data), S3 (n/a for this feature), IAM (EC2 instance profile) |
+| **LOC** | ~1,400 (900 frontend + 500 backend) |
 
-### Feature 2: Community Report Submission (with photo upload to S3)
+### Feature 2: Community Report Submission (with S3 photo upload)
+
 | Item | Detail |
 |------|--------|
-| **What** | Residents submit flood reports (location, description, severity estimate, optional photo). Upload photos to S3 using presigned URLs. View own submitted reports. Reports go to admin review queue. |
-| **Frontend Pages** | `/dashboard/resident/reports` (form with location picker + photo upload, list of own reports) |
-| **Backend Modules** | `reports/` (reports.controller, reports.service — POST/GET endpoints for report submission), `uploads/` (uploads.controller, uploads.service — presigned URL generation) |
-| **DB Tables Used** | `reports` (create + read own reports), `users` (link report to submitter) |
-| **API Endpoints** | `POST /api/reports` (submit report), `GET /api/reports/my` (list own reports), `POST /api/uploads/presign` (get S3 presigned PUT URL), `GET /api/uploads/:key` (presigned GET URL for viewing) |
-| **AWS Services** | EC2 (compute), RDS PostgreSQL (store report metadata), **S3** (photo storage via presigned URLs), IAM (s3:PutObject, s3:GetObject permissions) |
-| **Lines of Code Estimate** | ~500 lines (frontend form + location picker + upload UI) + ~350 lines (backend reports POST/GET + S3 presigned URL logic) |
+| **What** | Residents submit flood reports (location, description, severity, photo). Photos uploaded to S3 using **presigned URLs** (secure direct upload). View own reports with status (pending/verified/rejected). |
+| **Frontend** | `/dashboard/resident/reports` (form with location picker, photo upload, report list) |
+| **Backend** | `reports/` module (reports.controller, reports.service — POST/GET), `uploads/` module (uploads.controller, uploads.service — S3 presigned URL generation using AWS SDK) |
+| **Database** | `reports` (create/read own: id, userId, location, description, severity, photoUrl, status, submittedAt) |
+| **API Endpoints** | `POST /api/reports`, `GET /api/reports/my`, `GET /api/reports/:id`, `POST /api/uploads/presign` (generate presigned PUT URL), `GET /api/uploads/:key` (presigned GET URL) |
+| **AWS Used** | EB (deploy), RDS (store report metadata), **S3 (upload photos)**, IAM (S3 permissions) |
+| **LOC** | ~700 (400 frontend + 300 backend) |
 
-### Shared Work
-- Landing page components (can split with others)
-- Auth pages (login/register) — shared foundation, but Member 4 owns user management backend
+### AWS Service Lead: S3 Bucket Setup
+
+**Responsibility:** Setup S3 bucket for the entire team (all photo uploads: reports, shelters)
+
+**Tasks:**
+1. Create S3 bucket: `floodguard-photos-prod`
+2. Configure bucket:
+   - Public access: Block all (use presigned URLs instead)
+   - CORS configuration (allow PUT/GET from frontend domain)
+   - Lifecycle policy (optional: delete files older than 1 year)
+3. Create IAM policy for S3 access:
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
+         "Resource": "arn:aws:s3:::floodguard-photos-prod/*"
+       }
+     ]
+   }
+   ```
+4. Attach policy to EB EC2 instance profile (work with Member 4)
+5. Set environment variable: `S3_BUCKET_NAME=floodguard-photos-prod`
+6. Implement presigned URL generation in backend:
+   ```typescript
+   import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+   import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+   // Generate presigned PUT URL (15 min expiry)
+   ```
+7. Test photo upload workflow (browser → S3 direct upload)
+8. **Document:** S3 setup guide for team (how to use presigned URLs)
+
+**Deliverables:**
+- S3 bucket configured and accessible
+- Presigned URL generation working
+- Other members can use `POST /api/uploads/presign` for their features
+- Documentation: `docs/aws-s3-setup.md`
 
 ---
 
-## Member 2 — Resident Emergency Response Features
+## Member 2 — Volunteer (Emergency Response) + RDS Lead
 
-### Role: Public / Resident (Emergency Response)
-> Resident-facing emergency features: SOS requests and evacuation coordination during flood events.
+### Role: Volunteer
+> Community volunteers who respond to SOS requests and manage shelters.
 
-### Feature 1: SOS Request Management (Submit + Track)
+### Feature 1: SOS Request Response System
+
 | Item | Detail |
 |------|--------|
-| **What** | Residents submit SOS requests for emergency help (evacuation, rescue, medical, relief supplies). Select request type, priority level, location, and description. Track status of submitted requests (pending → assigned → in_progress → completed). View request history with timestamps. Priority-based display. Admin can view and assign requests to responders. |
-| **Frontend Pages** | `/dashboard/resident/requests` (submit form with request type, priority, location, description), `/dashboard/resident/requests/track` (list of own requests with status tracking), `/dashboard/resident/emergency` (emergency contact card + SOS quick actions) |
-| **Backend Modules** | `flood-requests/` (flood-requests.controller, flood-requests.service, flood-requests.dto) — POST (create), GET (user's own requests), status tracking, priority validation |
-| **DB Tables Used** | `flood_requests` (columns: id, userId, type, priority, status, location, description, requestedAt, respondedAt, completedAt) |
-| **API Endpoints** | `POST /api/flood-requests` (resident submit), `GET /api/flood-requests/my` (user's own requests), `GET /api/flood-requests/:id` (request details), `GET /api/flood-requests/stats` (personal stats: total submitted, completed, pending) |
-| **AWS Services** | EC2 (compute), RDS PostgreSQL (requests CRUD) |
-| **Lines of Code Estimate** | ~700 lines (frontend: submit form + tracking UI + emergency dashboard) + ~500 lines (backend: request creation + status tracking + validation) |
+| **What** | Volunteers view incoming SOS requests (evacuation, rescue, medical, relief). Request queue with filters (type, priority, status). Claim requests, update status (pending → assigned → in_progress → completed). Priority-based sorting. |
+| **Frontend** | `/dashboard/volunteer` (home with stats), `/dashboard/volunteer/requests` (queue table), `/dashboard/volunteer/requests/:id` (detail), `/dashboard/volunteer/activity` (activity log) |
+| **Backend** | `flood-requests/` module (flood-requests.controller, flood-requests.service, flood-requests.dto — GET queue, PATCH claim, PATCH status) |
+| **Database** | `flood_requests` (read/update: id, userId, type, priority, status, location, description, assignedVolunteerId, timestamps) |
+| **API Endpoints** | `GET /api/flood-requests` (queue with filters), `GET /api/flood-requests/:id`, `PATCH /api/flood-requests/:id/claim`, `PATCH /api/flood-requests/:id/status`, `GET /api/flood-requests/my` |
+| **AWS Used** | EB (deploy), **RDS (read/write requests)**, S3 (n/a), IAM (instance profile) |
+| **LOC** | ~1,200 (700 frontend + 500 backend) |
 
-### Feature 2: Evacuation Route & Shelter Finder
+### Feature 2: Shelter Management (with S3 photo upload)
+
 | Item | Detail |
 |------|--------|
-| **What** | Residents view evacuation routes and shelter locations during flood alerts. Interactive map showing nearest shelters with real-time capacity info (total capacity, current occupancy, status: open/full/closed). Turn-by-turn evacuation route suggestions based on current location. Shelter details: name, address, distance, estimated travel time, available facilities, contact info. Filter by distance, capacity, and open status. |
-| **Frontend Pages** | `/dashboard/resident/evacuation` (map with shelter markers + route overlay), `/dashboard/resident/evacuation/routes` (list of recommended routes based on location), `/dashboard/resident/shelters` (shelter list with distance sorting, capacity indicators, directions button) |
-| **Backend Modules** | `evacuation/` (evacuation.controller, evacuation.service — GET routes and shelters, distance calculation, capacity checks) |
-| **DB Tables Used** | `evacuation_routes` (routes: id, startLocation, endLocation, distance, estimatedTime, instructions, isSafe), `evacuation_shelters` (shelters: id, name, location, capacity, currentOccupancy, status, facilities, contactInfo) |
-| **API Endpoints** | `GET /api/evacuation/routes` (list routes by location), `GET /api/evacuation/routes/nearest` (get nearest safe route), `GET /api/evacuation/shelters` (list all shelters with filters), `GET /api/evacuation/shelters/nearest` (find nearest available shelter), `GET /api/evacuation/shelters/:id` (shelter details) |
-| **AWS Services** | EC2 (compute), RDS PostgreSQL (routes + shelter data) |
-| **Lines of Code Estimate** | ~800 lines (frontend: evacuation map + route display + shelter list + direction UI) + ~450 lines (backend: evacuation routing logic + distance calculation + capacity filtering) |
+| **What** | Volunteers manage emergency shelters: name, location, capacity, current occupancy, status (open/full/closed). Upload shelter photos to S3 (uses Member 1's presigned URL endpoint). Capacity tracking. |
+| **Frontend** | `/dashboard/volunteer/shelters` (list + CRUD form + photo upload), `/dashboard/volunteer/shelters/:id` (detail view) |
+| **Backend** | `shelters/` module (shelters.controller, shelters.service — full CRUD, capacity validation) |
+| **Database** | `shelters` (CRUD: id, name, location, capacity, currentOccupancy, status, facilities, photoUrl, managedBy, timestamps) |
+| **API Endpoints** | `GET /api/shelters`, `POST /api/shelters`, `GET /api/shelters/:id`, `PATCH /api/shelters/:id`, `DELETE /api/shelters/:id` |
+| **AWS Used** | EB (deploy), **RDS (store shelter data)**, S3 (shelter photos via M1's upload endpoint), IAM (instance profile) |
+| **LOC** | ~850 (450 frontend + 400 backend) |
+
+### AWS Service Lead: RDS PostgreSQL Setup
+
+**Responsibility:** Setup RDS PostgreSQL database for the entire team (all tables)
+
+**Tasks:**
+1. Create RDS PostgreSQL instance:
+   - Engine: PostgreSQL 15
+   - Instance class: `db.t3.micro` (free tier eligible) or `db.t4g.micro`
+   - Storage: 20 GB SSD
+   - Database name: `floodguard`
+   - Master username: `floodguard_admin`
+   - Master password: (store securely)
+2. Configure security:
+   - Create security group: `floodguard-rds-sg`
+   - Inbound rule: PostgreSQL (5432) from EB security group (coordinate with Member 3)
+   - Public accessibility: No (only EB can access)
+3. Set up database connection:
+   - Get RDS endpoint: `floodguard-db.xxxxx.us-east-1.rds.amazonaws.com`
+   - Connection string: `postgresql://floodguard_admin:PASSWORD@HOST:5432/floodguard`
+4. Prisma setup:
+   - Initialize Prisma: `npx prisma init`
+   - Configure `schema.prisma` with all tables (coordinate with all members)
+   - Create initial migration: `npx prisma migrate dev --name init`
+5. Set environment variables (for all members):
+   ```
+   DATABASE_URL=postgresql://floodguard_admin:PASSWORD@HOST:5432/floodguard
+   ```
+6. Test connection from local machine (temporarily allow your IP)
+7. Create deployment migration script: `.platform/hooks/predeploy/01_migrate.sh`
+   ```bash
+   #!/bin/bash
+   cd /var/app/staging/backend
+   npx prisma migrate deploy
+   ```
+8. Seed database with test data: `npx prisma db seed`
+9. **Document:** RDS setup guide for team (connection, migrations, troubleshooting)
+
+**Deliverables:**
+- RDS instance running and accessible from EB
+- Prisma schema with all tables (coordinated with all members)
+- Migrations working on local + EB deploy
+- Environment variables shared with team (securely)
+- Documentation: `docs/aws-rds-setup.md`
 
 ---
 
-## Member 3 — Admin Role (Authority Dashboard)
+## Member 3 — Admin (Local Authority) + EB Lead
 
-### Role: Local Authority / Admin
-> Government officials and emergency responders who manage the alert system.
+### Role: Admin
+> Government officials who manage alerts and coordinate response.
 
-### Feature 1: Alert Management Console (full CRUD + escalation)
+### Feature 1: Alert Management Console (CRUD + escalation)
+
 | Item | Detail |
 |------|--------|
-| **What** | Admin creates flood alerts for specific regions (severity: `info`/`warning`/`severe`/`critical`, message, affected regions). Edit/escalate existing alerts (change severity, update message). Resolve/expire alerts when flood subsides. View all alerts (active + historical) with filters (region, severity, date range). Alert list shows: region name, severity badge, timestamp, status. |
-| **Frontend Pages** | `/dashboard/admin` (home with active alert summary cards), `/dashboard/admin/alerts` (alert list + CRUD form), `/dashboard/admin/alerts/[id]` (alert detail page with escalation/resolution actions) |
-| **Backend Modules** | `alerts/` (alerts.controller, alerts.service, alerts.dto) — full CRUD, severity escalation logic, resolution workflow, validation (admin-only, region existence check) |
-| **DB Tables Used** | `alerts` (CRUD — columns: id, regionId, severity, message, issuedBy, status, createdAt, resolvedAt), `regions` (read for region dropdown), `users` (issuedBy link) |
-| **API Endpoints** | `POST /api/alerts` (create), `GET /api/alerts` (list with filters), `GET /api/alerts/:id` (details), `PATCH /api/alerts/:id` (update severity/message), `PATCH /api/alerts/:id/escalate` (bump severity), `PATCH /api/alerts/:id/resolve` (close alert), `GET /api/alerts/stats` (count by severity) |
-| **AWS Services** | EC2 (compute), RDS PostgreSQL (alerts CRUD) |
-| **Lines of Code Estimate** | ~800 lines (frontend: alert list + create/edit forms + escalation UI + filters) + ~650 lines (backend: alerts module with full CRUD + business logic) |
+| **What** | Admin creates/edits/escalates flood alerts for regions. Severity levels: info/warning/severe/critical. Escalate alerts (bump severity). Resolve alerts. View all alerts (active + historical) with filters. Multi-region alert support. |
+| **Frontend** | `/dashboard/admin` (home with alert stats), `/dashboard/admin/alerts` (list + filters), `/dashboard/admin/alerts/new` (create form), `/dashboard/admin/alerts/:id` (detail + escalate/resolve) |
+| **Backend** | `alerts/` module (alerts.controller, alerts.service, alerts.dto — full CRUD, escalation logic, admin-only guard) |
+| **Database** | `alerts` (CRUD: id, regionId, severity, message, issuedBy, status, createdAt, updatedAt, resolvedAt) |
+| **API Endpoints** | `POST /api/alerts`, `GET /api/alerts`, `GET /api/alerts/:id`, `PATCH /api/alerts/:id`, `PATCH /api/alerts/:id/escalate`, `PATCH /api/alerts/:id/resolve`, `DELETE /api/alerts/:id` |
+| **AWS Used** | **EB (deploy)**, RDS (store alerts), S3 (n/a), IAM (instance profile) |
+| **LOC** | ~1,100 (650 frontend + 450 backend) |
 
-### Feature 2: Report Review & Region Management
+### Feature 2: Report Review + Region Management
+
 | Item | Detail |
 |------|--------|
-| **What** | **Report Review:** Admin reviews community-submitted reports (from Member 1's resident feature). View all reports with filters (status: `pending`/`verified`/`rejected`, region, date). Approve/verify reports (status → `verified`, adds admin note), reject reports (status → `rejected`, reason required). **Region Management:** Admin CRUD on monitoring zones (name, boundary coordinates, risk level, sensor assignments). Regions are used by alerts, map, and weather modules. |
-| **Frontend Pages** | `/dashboard/admin/reports` (report list with review actions, status badges, photo preview if available), `/dashboard/admin/reports/[id]` (detailed review page with map location, full photo, approve/reject form), `/dashboard/admin/regions` (region list + CRUD form with map boundary picker), `/dashboard/admin/requests` (view all SOS requests with assignment/response management) |
-| **Backend Modules** | `reports/` (reports.controller, reports.service — GET all reports, PATCH for review actions, admin-only endpoints), `regions/` (regions.controller, regions.service — full CRUD, geofence validation) |
-| **DB Tables Used** | `reports` (read + update status/adminNote), `regions` (CRUD — columns: id, name, boundary (geojson), riskLevel, sensorIds, createdAt), `flood_requests` (read-only for request overview) |
-| **API Endpoints** | `GET /api/reports` (admin: all reports with filters), `GET /api/reports/:id` (detail), `PATCH /api/reports/:id/verify` (approve), `PATCH /api/reports/:id/reject` (reject with reason), `POST /api/regions` (create), `GET /api/regions` (list all — shared with Member 1 map), `PATCH /api/regions/:id` (update), `DELETE /api/regions/:id` (soft delete), `GET /api/flood-requests` (admin: all requests), `PATCH /api/flood-requests/:id/assign` (assign responder), `PATCH /api/flood-requests/:id/status` (update status) |
-| **AWS Services** | EC2 (compute), RDS PostgreSQL (reports review + regions CRUD), S3 (read report photos via Member 1's presigned URLs — no new S3 logic needed) |
-| **Lines of Code Estimate** | ~900 lines (frontend: report review UI + region CRUD forms + map boundary picker) + ~700 lines (backend: reports review module + regions full CRUD) |
+| **What** | **Report Review:** Admin reviews resident reports. Verify/approve or reject with reason. Photo preview. Filters (status, region, date). **Region Management:** Full CRUD on monitoring zones. Define boundaries (GeoJSON). Update risk levels. Sensor assignments. |
+| **Frontend** | `/dashboard/admin/reports` (list + review actions), `/dashboard/admin/reports/:id` (detail + approve/reject), `/dashboard/admin/regions` (list + CRUD form with map), `/dashboard/admin/regions/:id` (detail), `/dashboard/admin/requests` (SOS oversight) |
+| **Backend** | `reports/` module (admin endpoints: GET all, PATCH verify, PATCH reject), `regions/` module (full CRUD: regions.controller, regions.service, geofence validation) |
+| **Database** | `reports` (read/update: status, adminNote, reviewedBy), `regions` (CRUD: id, name, boundary, riskLevel, sensorIds, population) |
+| **API Endpoints** | `GET /api/reports` (admin: all), `GET /api/reports/:id`, `PATCH /api/reports/:id/verify`, `PATCH /api/reports/:id/reject`, `POST /api/regions`, `GET /api/regions`, `PATCH /api/regions/:id`, `DELETE /api/regions/:id` |
+| **AWS Used** | **EB (deploy)**, RDS (read/write reports + regions), S3 (read report photos), IAM (instance profile) |
+| **LOC** | ~1,300 (750 frontend + 550 backend) |
+
+### AWS Service Lead: Elastic Beanstalk Setup
+
+**Responsibility:** Setup Elastic Beanstalk environments for the entire team (all deploy here)
+
+**Tasks:**
+1. Install EB CLI: `pip install awsebcli`
+2. Initialize EB application:
+   ```bash
+   cd backend
+   eb init floodguard-api --platform node.js --region us-east-1
+   ```
+3. Create production environment:
+   ```bash
+   eb create floodguard-backend-prod --instance-type t3.micro --envvars NODE_ENV=production
+   ```
+4. Configure deployment:
+   - Create `Procfile`:
+     ```
+     web: npm run start:prod
+     ```
+   - Create `.platform/hooks/predeploy/01_migrate.sh` (coordinate with Member 2 for Prisma migrations)
+   - Create `.ebextensions/nodecommand.config` (if needed)
+5. Set up health check:
+   - Create `/api/health` endpoint (coordinate with Member 4)
+   - Configure EB health check path: `/api/health`
+6. Configure environment variables (coordinate with all members):
+   ```bash
+   eb setenv DATABASE_URL=postgresql://... \
+            S3_BUCKET_NAME=floodguard-photos-prod \
+            JWT_SECRET=... \
+            NODE_ENV=production
+   ```
+7. Get EB security group ID (share with Member 2 for RDS access)
+8. Deploy test version:
+   ```bash
+   eb deploy
+   ```
+9. Configure auto-scaling (optional): min 1, max 2 instances
+10. Set up deployment pipeline documentation
+11. **Frontend EB setup** (similar process):
+    ```bash
+    cd ..  # root
+    eb init floodguard-web --platform node.js
+    eb create floodguard-frontend-prod --instance-type t3.micro
+    ```
+12. **Document:** EB setup guide (how to deploy, environment variables, troubleshooting)
+
+**Deliverables:**
+- Both EB environments running (backend + frontend)
+- Green health status in EB console
+- All members can deploy with `eb deploy`
+- Deployment workflow documented
+- Documentation: `docs/aws-eb-deployment.md`
 
 ---
 
-## Member 4 — Super Admin & Infrastructure Lead
+## Member 4 — Authentication & Infrastructure + IAM Lead
 
-### Role: Super Admin + DevOps
-> System administrator who manages users, system configuration, and AWS cloud deployment.
+### Role: Infrastructure (Cross-Cutting)
+> Handles authentication, user management, and security configuration.
 
-### Feature 1: User Management + Role Assignment
+### Feature 1: Authentication System
+
 | Item | Detail |
 |------|--------|
-| **What** | Full CRUD on user accounts (create, view all, update, deactivate/delete). Assign/change user roles (`resident`, `admin`, `super_admin`). View all users in a table with filters (role, region, status: `active`/`inactive`). Edit user profiles (name, email, phone, assigned regions). Password reset functionality. Super admin dashboard showing user stats (total users, by role, recent registrations, active sessions). Activity logs showing user actions. |
-| **Frontend Pages** | `/dashboard/super-admin` (home with user stats cards), `/dashboard/super-admin/users` (user list table + CRUD form + role assignment dropdown) |
-| **Backend Modules** | `users/` (users.controller, users.service, users.dto) — full CRUD, role validation, authentication hooks (register/login endpoints, password hashing with bcrypt), super-admin-only guard |
-| **DB Tables Used** | `users` (CRUD — columns: id, email, passwordHash, name, phone, role, assignedRegions, status, createdAt, lastLogin) |
-| **API Endpoints** | `POST /api/auth/register` (create user), `POST /api/auth/login` (authenticate), `GET /api/users` (list all — super admin only), `GET /api/users/:id` (details), `PATCH /api/users/:id` (update profile/role), `DELETE /api/users/:id` (deactivate), `PATCH /api/users/:id/reset-password` (admin password reset) |
-| **AWS Services** | EC2 (compute), RDS PostgreSQL (users CRUD) |
-| **Lines of Code Estimate** | ~600 lines (frontend: user list + CRUD form + role selector) + ~800 lines (backend: users module + auth endpoints + JWT + guards + password hashing) |
+| **What** | **Register:** Email, password, name, phone, role (resident/volunteer). Password hashing (bcrypt, 10 rounds). **Login:** JWT token generation (`{ sub: userId, role, email }`, 7-day expiry). **Logout:** Token invalidation (optional blacklist). JWT middleware for protected routes. Role-based guards. |
+| **Frontend** | `/auth/register` (registration form), `/auth/login` (login form), `/dashboard/profile` (user profile view/edit) |
+| **Backend** | `auth/` module (auth.controller, auth.service — register, login, JWT), `guards/` (jwt-auth.guard, roles.guard) |
+| **Database** | `users` (create + authenticate: id, email, passwordHash, name, phone, role, status, createdAt, lastLogin) |
+| **API Endpoints** | `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me` (current user) |
+| **AWS Used** | EB (deploy), RDS (store users), S3 (n/a), **IAM (JWT secret in env vars)** |
+| **LOC** | ~800 (400 frontend + 400 backend) |
 
-### Feature 2: System Configuration + AWS Deployment (EB + RDS + S3 setup)
+### Feature 2: User Management + Health Monitoring
+
 | Item | Detail |
 |------|--------|
-| **What** | **System Configuration:** Super admin manages system-wide settings: alert thresholds (water level triggers for each severity), notification preferences (email/SMS toggle), sensor data refresh intervals, default region risk levels, emergency contact information, system maintenance mode. Configuration dashboard with validation. **AWS Deployment:** Full infrastructure setup. Deploy frontend and backend on Elastic Beanstalk (2 environments: `floodguard-frontend-prod`, `floodguard-backend-prod`). Configure RDS PostgreSQL (security group, inbound rules, environment variables `DB_HOST`, `DB_PASSWORD`). Set up S3 bucket for photo uploads (CORS, IAM policy, environment variable `S3_BUCKET_NAME`). Create Procfile, `.platform/hooks/predeploy`, health check endpoint. Document `eb init`, `eb create`, `eb deploy` workflow. |
-| **Frontend Pages** | `/dashboard/super-admin/config` (system configuration form with alert thresholds, notification settings, sensor intervals), `/dashboard/super-admin/aws` (AWS resource monitoring: EB health, RDS status, S3 usage) |
-| **Backend Modules** | `system-config/` (system-config.controller, system-config.service — GET/PATCH config), `health/` (health.controller — `/api/health` endpoint for EB health checks), deployment configs (Procfile, `.ebextensions/`, `.platform/hooks/predeploy/01_migrate.sh`) |
-| **DB Tables Used** | `system_config` (CRUD — columns: id, key, value, category, description, updatedBy, updatedAt) — stores all system-wide configuration |
-| **API Endpoints** | `GET /api/system-config` (all settings — super admin only), `GET /api/system-config/:key` (single setting), `PATCH /api/system-config/:key` (update setting), `GET /api/health` (health check), `GET /api/health/detailed` (EB + RDS + S3 status) |
-| **AWS Services** | **Elastic Beanstalk** (2 environments: frontend + backend), **RDS PostgreSQL** (database setup, security groups, parameter store for credentials), **S3** (bucket creation, CORS, IAM policy), **IAM** (EB service role, EC2 instance profile, S3 access policy), EC2 (compute via EB) |
-| **Lines of Code Estimate** | ~500 lines (frontend: config form + AWS monitoring dashboard) + ~600 lines (backend: system-config module + health checks + deployment scripts) + **Deployment effort:** EB setup, RDS config, S3 bucket, security groups, IAM policies, environment variables, documentation |
+| **What** | **User Management:** Admin can view all users (table with filters: role, status). Create users. Update user details (name, email, role). Deactivate accounts. **Health Monitoring:** Health check endpoint (`/api/health`) for EB. Detailed health (`/api/health/detailed`) shows: DB connection, S3 access, memory, uptime. Admin health dashboard. CloudWatch log integration. |
+| **Frontend** | `/dashboard/admin/users` (user list + CRUD form — admin only), `/dashboard/admin/health` (health dashboard — admin only) |
+| **Backend** | `users/` module (users.controller, users.service — CRUD, admin-only guard), `health/` module (health.controller, health.service — health checks) |
+| **Database** | `users` (CRUD: read all, update, soft delete), `system_logs` (optional: id, level, message, timestamp) |
+| **API Endpoints** | `GET /api/users` (admin only), `GET /api/users/:id`, `PATCH /api/users/:id`, `DELETE /api/users/:id`, `GET /api/health`, `GET /api/health/detailed` (admin only) |
+| **AWS Used** | EB (health check), RDS (users CRUD), S3 (health check S3 connection), **IAM (EC2 instance profile permissions)** |
+| **LOC** | ~1,350 (600 frontend + 750 backend) |
+
+### AWS Service Lead: IAM Roles & Security Configuration
+
+**Responsibility:** Setup IAM roles, security groups, and environment security for the entire team
+
+**Tasks:**
+1. **Create IAM Role for EB EC2 Instances:**
+   - Role name: `floodguard-ec2-role`
+   - Trusted entity: EC2
+   - Attach AWS managed policies:
+     - `AWSElasticBeanstalkWebTier`
+     - `AWSElasticBeanstalkWorkerTier` (if using workers)
+     - `AWSElasticBeanstalkMulticontainerDocker` (if using Docker)
+   - Create custom policy for S3 (coordinate with Member 1):
+     ```json
+     {
+       "Version": "2012-10-17",
+       "Statement": [
+         {
+           "Effect": "Allow",
+           "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
+           "Resource": "arn:aws:s3:::floodguard-photos-prod/*"
+         },
+         {
+           "Effect": "Allow",
+           "Action": ["s3:ListBucket"],
+           "Resource": "arn:aws:s3:::floodguard-photos-prod"
+         }
+       ]
+     }
+     ```
+   - Attach custom S3 policy to role
+
+2. **Create Instance Profile:**
+   - Instance profile name: `floodguard-ec2-instance-profile`
+   - Attach `floodguard-ec2-role` to instance profile
+   - Assign to EB environment (coordinate with Member 3)
+
+3. **Configure Security Groups:**
+   - Get EB security group ID from Member 3
+   - Ensure RDS security group (from Member 2) allows inbound from EB security group
+   - Document security group rules
+
+4. **Environment Variables (Secure Management):**
+   - Generate JWT secret: `openssl rand -base64 32`
+   - Coordinate with all members to collect required env vars:
+     - `DATABASE_URL` (from Member 2)
+     - `S3_BUCKET_NAME` (from Member 1)
+     - `JWT_SECRET` (your responsibility)
+     - `JWT_EXPIRY=7d`
+     - `BCRYPT_ROUNDS=10`
+     - `NODE_ENV=production`
+   - Store sensitive values in AWS Systems Manager Parameter Store (optional but recommended):
+     ```bash
+     aws ssm put-parameter --name /floodguard/prod/db-password --value "..." --type SecureString
+     aws ssm put-parameter --name /floodguard/prod/jwt-secret --value "..." --type SecureString
+     ```
+   - Share with team via secure channel (NOT git)
+
+5. **CloudWatch Logs Configuration:**
+   - Enable CloudWatch Logs for EB environments
+   - Configure log streaming (application logs, access logs, error logs)
+   - Create log groups: `/aws/elasticbeanstalk/floodguard-backend-prod/`
+   - Set retention: 7 days (to save costs)
+
+6. **Security Best Practices Documentation:**
+   - Document: How to rotate JWT secret
+   - Document: How to add new IAM permissions
+   - Document: Security group rules explanation
+   - Document: Environment variable management
+
+7. **Implement Health Checks:**
+   - Create `/api/health` endpoint:
+     ```typescript
+     @Get('health')
+     async healthCheck() {
+       return {
+         status: 'ok',
+         timestamp: new Date().toISOString(),
+         uptime: process.uptime(),
+       };
+     }
+     ```
+   - Create `/api/health/detailed` (admin only):
+     ```typescript
+     @Get('health/detailed')
+     @UseGuards(JwtAuthGuard, RolesGuard)
+     @Roles('admin')
+     async detailedHealth() {
+       const dbStatus = await this.checkDatabase();
+       const s3Status = await this.checkS3();
+       return {
+         database: dbStatus,
+         s3: s3Status,
+         memory: process.memoryUsage(),
+         uptime: process.uptime(),
+       };
+     }
+     ```
+
+8. **Document:** IAM and security setup guide
+
+**Deliverables:**
+- IAM role with correct permissions (EB + S3 + RDS)
+- Instance profile attached to EB (working with Member 3)
+- Security groups configured (RDS accessible from EB)
+- Environment variables documented and shared securely
+- CloudWatch Logs enabled and streaming
+- Health check endpoints working
+- Documentation: `docs/aws-iam-security.md`
 
 ---
 
-## Workload Matrix (Task 1 Only — For Report Submission)
+## Collaboration Timeline (6 Weeks)
 
-| # | Task Category | Member 1 | Member 2 | Member 3 | Member 4 |
-|---|---------------|----------|----------|----------|----------|
-| **1** | **Frontend Pages** | 3 pages: Resident home, Map, Reports submit | 4 pages: Resident emergency, Requests track, Evacuation map, Shelters | 5 pages: Admin home, Alerts list, Alert detail, Reports review, Regions | 2 pages: Super admin home, Users list, Config |
-| **2** | **Backend Modules** | 3 modules: Weather, Regions (GET), Reports (POST), Uploads (presigned URLs) | 2 modules: Flood-requests, Evacuation (routes + shelters) | 3 modules: Alerts, Reports (review + admin request mgmt), Regions (CRUD) | 3 modules: Users, System-config, Health |
-| **3** | **Database Tables (Primary)** | regions (read), sensors (read), reports (create) | flood_requests (CRUD), evacuation_routes, evacuation_shelters | alerts (CRUD), reports (review), regions (CRUD) | users (CRUD), system_config (CRUD) |
-| **4** | **API Endpoints** | 6 endpoints (weather, regions GET, reports POST, uploads presign) | 9 endpoints (flood-requests CRUD, routes GET, shelters GET, nearest finder) | 14 endpoints (alerts CRUD, reports review, regions CRUD, request admin mgmt) | 9 endpoints (users CRUD, auth, health, system-config CRUD) |
-| **5** | **Lines of Code (Estimate)** | ~2,050 lines (1,300 frontend + 750 backend) | ~2,150 lines (1,500 frontend + 950 backend) | ~2,500 lines (1,750 frontend + 1,400 backend) | ~2,300 lines (1,100 frontend + 1,400 backend + deployment) |
-| **6** | **AWS Services Used** | EC2 (EB), RDS, S3 (photo upload) | EC2 (EB), RDS (evacuation data) | EC2 (EB), RDS, S3 (read report photos) | EC2 (EB), RDS, S3 (setup), **EB deployment lead** |
-| **7** | **Unique Complexity** | Map integration (Mapbox/Leaflet), weather data display, rainfall charts, S3 presigned URLs | SOS request lifecycle, evacuation routing logic, distance calculation, shelter capacity filtering | Alert escalation logic, report review workflow, region geofence validation, admin request coordination | Auth system (JWT, password hashing, guards), system config management, EB + RDS + S3 infrastructure setup |
+### Week 1: AWS Infrastructure Setup (All Members Collaborate)
+
+**Monday-Tuesday: Planning & Account Setup**
+- All: AWS account access confirmed
+- All: Install AWS CLI, EB CLI, configure credentials
+- All: Review architecture diagram together
+- Member 3: Start EB environment creation
+- Member 2: Start RDS instance creation
+- Member 1: Start S3 bucket creation
+- Member 4: Start IAM role creation
+
+**Wednesday-Friday: Infrastructure Integration**
+- Member 3: EB environments created, get security group IDs
+- Member 2: RDS instance created, configure security group (allow EB)
+- Member 1: S3 bucket configured, IAM policy created
+- Member 4: Attach S3 policy to IAM role, create instance profile
+- All: Test connections:
+  - EB → RDS connection test
+  - EB → S3 connection test (upload/download test file)
+  - Health check endpoint working
+- Member 2: Share `DATABASE_URL` with team
+- Member 1: Share `S3_BUCKET_NAME` with team
+- Member 4: Share `JWT_SECRET` with team
+- Member 3: Set all environment variables in EB
+
+**Weekend: Documentation**
+- Member 1: Write `docs/aws-s3-setup.md`
+- Member 2: Write `docs/aws-rds-setup.md`
+- Member 3: Write `docs/aws-eb-deployment.md`
+- Member 4: Write `docs/aws-iam-security.md`
+
+### Week 2-3: Backend Development (Parallel)
+
+**All Members Work Simultaneously:**
+- Member 1: Weather, Regions, Sensors GET endpoints, Reports POST, Uploads presigned URLs
+- Member 2: Flood-requests (volunteer queue, claim, status), Shelters CRUD
+- Member 3: Alerts CRUD + escalation, Reports admin review, Regions CRUD
+- Member 4: Auth (register, login, JWT), Users CRUD, Guards, Health endpoints
+
+**Daily Standups (15 min):**
+- What I did yesterday
+- What I'm doing today
+- Any blockers (help needed)
+
+**Mid-Week 2: Prisma Schema Collaboration**
+- Member 2 leads: Combine all table definitions into `schema.prisma`
+- All: Review and agree on schema
+- Member 2: Create and run initial migration
+- All: Pull latest migration, test locally
+
+**End of Week 3 Milestone:**
+- ✅ All backend endpoints working locally
+- ✅ Prisma migrations applied
+- ✅ Postman collection with all endpoints
+- ✅ Unit tests (optional but recommended)
+
+### Week 4-5: Frontend Development (Parallel)
+
+**All Members Work Simultaneously:**
+- Member 1: Resident home, Map (Mapbox/Leaflet), Weather dashboard, Reports page
+- Member 2: Volunteer home, Requests queue, Shelters page, Activity log
+- Member 3: Admin home, Alerts console, Report review, Regions manager
+- Member 4: Auth pages (register, login), Profile page, Admin users page, Health dashboard
+
+**Integration Points:**
+- All: Use Member 4's auth context for login state
+- Member 1 & 2: Use Member 1's upload endpoint for photos
+- All: Use consistent Tailwind classes (design system)
+- All: Use React Query for API calls (consistent pattern)
+
+**End of Week 5 Milestone:**
+- ✅ All frontend pages working locally
+- ✅ Frontend ↔ Backend integration working
+- ✅ Photos upload to S3 successfully
+- ✅ Authentication flow working
+
+### Week 6: Deployment & Testing
+
+**Monday-Tuesday: Deployment**
+- All: Deploy backend to EB:
+  ```bash
+  cd backend
+  eb deploy floodguard-backend-prod
+  ```
+- All: Deploy frontend to EB:
+  ```bash
+  cd frontend  # or root
+  eb deploy floodguard-frontend-prod
+  ```
+- All: Test deployed app (each member tests their features)
+
+**Wednesday-Thursday: Integration Testing**
+- Test cross-feature flows:
+  - Resident submits report → Admin reviews → Resident sees verified status
+  - Admin creates alert → Resident sees on map
+  - Resident submits SOS → Volunteer claims → Volunteer completes
+  - Volunteer adds shelter → Resident sees on evacuation map
+- Fix bugs found during testing
+- All: Re-deploy after fixes
+
+**Friday: Demo Preparation**
+- All: Prepare demo scripts
+- All: Take AWS console screenshots:
+  - Member 1: S3 bucket with photos
+  - Member 2: RDS instance (available status)
+  - Member 3: EB environments (green health)
+  - Member 4: IAM roles and policies
+- All: Record demo videos (each member shows their features)
+- All: Prepare presentation slides
+
+**Weekend: Documentation & Submission**
+- All: Update README with deployment instructions
+- All: Complete workload matrix (track actual hours worked)
+- All: Write individual reflection (what you learned)
+- All: Submit project artifacts
 
 ---
 
-## Feature Non-Overlap Verification (Task 1)
+## Demo Checklist (Each Member Demonstrates)
 
-| Feature | Owner | No Overlap? | Evidence |
-|---------|-------|-------------|----------|
-| **Flood Risk Map + Weather Dashboard** | Member 1 | ✅ Unique | Only M1 builds map component, weather module, rainfall charts, sensor gauges |
-| **Community Report Submission (with S3 photo upload)** | Member 1 | ✅ Unique | Only M1 builds resident report submission form, reports POST endpoint, presigned URL generation |
-| **SOS Request Management (submit + track)** | Member 2 | ✅ Unique | Only M2 builds flood-requests module (resident side), request submission form, status tracking, priority logic |
-| **Evacuation Route & Shelter Finder** | Member 2 | ✅ Unique | Only M2 builds evacuation routing logic, shelter finder, distance calculation, route map display |
-| **Alert Management Console (CRUD + escalation)** | Member 3 | ✅ Unique | Only M3 builds alerts module, create/escalate/resolve workflows, severity management |
-| **Report Review & Region Management + Request Admin** | Member 3 | ✅ Unique | Only M3 builds report review workflow (verify/reject), regions CRUD, admin request assignment/coordination |
-| **User Management + Role Assignment** | Member 4 | ✅ Unique | Only M4 builds users module, auth system (JWT, guards), role assignment, super admin panel |
-| **System Configuration + AWS Deployment** | Member 4 | ✅ Unique | Only M4 handles system config management (alert thresholds, notifications), infrastructure setup (EB, RDS, S3, IAM) |
-
-> **Non-Overlap Summary:** Each member has 2 distinct features with NO functional overlap. All features align with the 3 official system roles (Resident, Admin, Super Admin). Shared infrastructure (RDS, S3, EB) is used by all but OWNED by Member 4 (setup responsibility). Uploads module is SHARED (M1 creates) but used consistently across features.
-
----
-
-## AWS Services Coverage (Task 1 — 30 marks)
-
-| AWS Service | Who Implements | What | Task |
-|-------------|---------------|------|------|
-| **Elastic Beanstalk** | Member 4 (setup + deploy), All (deployed on) | 2 environments (frontend + backend), Procfile, `.platform/hooks`, environment variables, health checks | **Task 1** ✅ |
-| **EC2 (via EB)** | Member 4 (EB config), All (compute) | Auto-provisioned via EB (t3.micro or t3.small instances), security groups, SSH access | **Task 1** ✅ |
-| **RDS PostgreSQL** | Member 4 (setup), All (use) | Database creation, security group (port 5432 from EB), parameter store for credentials, schema migrations | **Task 1** ✅ |
-| **S3** | Member 4 (bucket setup), Member 1 & 2 (presigned URLs) | Bucket creation, CORS config, IAM policy (s3:PutObject, s3:GetObject), presigned URL generation for report + shelter photos | **Task 1** ✅ |
-| **IAM** | Member 4 (roles + instance profile), All (service-specific policies) | EB service role, EC2 instance profile, S3 access policy, RDS parameter store access | **Task 1** ✅ |
-
-> **Task 1 Deliverables:** Both EB environments (green health), RDS connected (show DB connection in app), S3 photo uploads working (presigned URLs), health check passing, `eb deploy` workflow documented.
-
----
-
-## What's NOT in Task 1 (Task 2 scope — not in this breakdown)
-
-| AWS Service | Owner (Task 2) | What |
-|-------------|---------------|------|
-| **SNS** | Member 1 | Topic creation, email/SMS subscriptions, publish alerts |
-| **SES** | Member 1 | Email verification, send templated emails |
-| **Lambda** | TBD | Serverless functions (e.g., alert processing, scheduled jobs) |
-| **CloudWatch** | Member 3 | Custom dashboard, alarms (CPU, storage, health), log streaming |
-
----
-
-## Timeline Suggestion (Task 1 — 5 weeks)
-
-| Week | All Members | Member 1 | Member 2 | Member 3 | Member 4 |
-|------|-------------|----------|----------|----------|----------|
-| **Week 1-2** | **Backend Development** | Weather module, Reports POST, Regions GET, Uploads (S3) | Flood-requests module, Evacuation (routes + shelters) | Alerts module, Reports review, Regions CRUD | Users module, Auth (JWT), System-config module, Health endpoint |
-| | *Milestone* | Weather API working, report submission backend done, S3 presigned URLs working | Request submission API working, evacuation routing done, shelter finder done | Alert CRUD working, report review API done, admin request mgmt done | Auth working (register/login), user CRUD done, config API ready |
-| **Week 3-4** | **Frontend Development** | Resident home, Map (Leaflet/Mapbox), Report submit form | Resident emergency dashboard, Request tracking, Evacuation map, Shelter finder | Admin home, Alerts console, Report review UI, Regions page, Request admin panel | Super admin home, User management page, Config dashboard |
-| | *Milestone* | Map shows regions, weather dashboard displays data, report form submits to backend, photos upload | Request tracking shows status, evacuation map displays routes, shelter list with capacity works | Admin can create/escalate alerts, review reports, manage regions, assign SOS requests | User CRUD UI working, role assignment functional, system config editable |
-| **Week 5** | **AWS Deployment + Integration** | Test report photo upload to S3 (presigned URLs), verify map displays real alert data | Test evacuation routing, verify nearest shelter finder, test request lifecycle end-to-end | Test alert → region mapping, report review workflow, admin request assignment | **Deploy both EB environments**, RDS connected, S3 bucket configured, health checks passing |
-| | *Milestone* | Photos upload successfully, map shows real alert data | Residents can submit SOS requests, track status, find evacuation routes and shelters | Alerts appear on resident map, reports flow to admin review, requests assigned to responders | **Green health on EB**, all APIs accessible, database migrations run, all services connected |
-
-> **End of Task 1 Deliverable:** Both frontend + backend deployed on Elastic Beanstalk, RDS PostgreSQL connected, S3 photo uploads working, all features functional, health checks passing.
-
----
-
-## Demo Checklist (Task 1 — Each Member Must Show)
-
-### Member 1 — Resident Features
+### Member 1 Demo (Resident Info + S3)
 - [ ] Login as resident
-- [ ] View flood risk map with color-coded regions (low/moderate/high/severe)
-- [ ] See weather forecast + rainfall charts on resident dashboard
-- [ ] Submit flood report (location, description, photo upload to S3)
-- [ ] View own submitted reports list
-- [ ] Show uploaded photo is stored in S3 (check S3 console or presigned GET URL)
+- [ ] View flood risk map with color-coded regions
+- [ ] View weather dashboard with rainfall charts
+- [ ] View sensor readings
+- [ ] Submit flood report with photo upload
+- [ ] Show photo uploaded to S3 (open S3 console, show object)
+- [ ] View own reports list with status
+- [ ] **AWS:** Show S3 bucket configuration (CORS, IAM policy)
 
-### Member 2 — Resident Emergency Features
-- [ ] Login as resident
-- [ ] Submit SOS request (select type: evacuation/rescue/medical/relief, priority, location, description)
-- [ ] View own submitted requests with status tracking (pending → assigned → in_progress → completed)
-- [ ] View personal request statistics (total submitted, completed, pending)
-- [ ] View evacuation map with shelter markers and route overlay
-- [ ] Find nearest available shelter with capacity info (total/current/status)
-- [ ] Get turn-by-turn evacuation route recommendations based on current location
-- [ ] Filter shelters by distance, capacity, and open status
+### Member 2 Demo (Volunteer + RDS)
+- [ ] Login as volunteer
+- [ ] View SOS request queue with filters
+- [ ] Claim a request (status changes)
+- [ ] Update request to in_progress, then completed
+- [ ] View activity log
+- [ ] View shelters list
+- [ ] Add new shelter with photo upload (uses M1's upload endpoint)
+- [ ] Update shelter occupancy
+- [ ] **AWS:** Show RDS instance (available), security groups, Prisma migrations
 
-### Member 3 — Admin Features
+### Member 3 Demo (Admin + EB)
 - [ ] Login as admin
-- [ ] Create new flood alert (select region, severity, message)
-- [ ] Escalate existing alert (bump severity from `warning` → `severe`)
-- [ ] Resolve alert (mark as closed)
-- [ ] Review community-submitted reports (view all, filter by status)
-- [ ] Verify/approve report OR reject with reason
-- [ ] Manage regions (create new region, edit boundaries, update risk level)
-- [ ] Show alert appears on resident map after creation
-- [ ] View all SOS requests from all residents
-- [ ] Assign SOS requests to emergency responders
-- [ ] Update SOS request status (admin coordination)
+- [ ] Create flood alert for a region
+- [ ] Escalate alert severity (warning → severe)
+- [ ] Resolve alert
+- [ ] View all community reports
+- [ ] Verify a report (approve with note)
+- [ ] Reject a report (with reason)
+- [ ] Manage regions (create, edit boundary, update risk level)
+- [ ] **AWS:** Show EB environments (green health), deployment logs, health check
 
-### Member 4 — Super Admin + Infrastructure
-- [ ] Show both EB environments running (green health in EB console)
-- [ ] Show RDS PostgreSQL connected (query users table via backend API or DB client)
-- [ ] Show S3 bucket with uploaded photos (list objects in S3 console)
-- [ ] Login as super admin
-- [ ] View all users (filter by role: resident, admin, super_admin)
-- [ ] Create new user with specific role
-- [ ] Edit user role (change resident → admin)
-- [ ] Manage system configuration (alert thresholds, notification settings, sensor intervals)
-- [ ] View AWS resource monitoring (EB health, RDS status, S3 usage)
-- [ ] Document `eb deploy` workflow (show commands, health check passing at `/api/health`)
+### Member 4 Demo (Auth + IAM)
+- [ ] Register new resident user
+- [ ] Register new volunteer user
+- [ ] Login with registered user (JWT issued)
+- [ ] View user profile
+- [ ] Login as admin
+- [ ] View all users list with filters
+- [ ] Create new user via admin panel
+- [ ] Change user role
+- [ ] View health dashboard (DB, S3, memory, uptime)
+- [ ] **AWS:** Show IAM roles, instance profile, security groups, CloudWatch logs
 
 ---
 
-## Task 1 Submission Artifacts
+## Equal Workload Distribution
 
-1. **Deployed Application URLs**
-   - Frontend: `http://floodguard-frontend-prod.elasticbeanstalk.com`
-   - Backend: `http://floodguard-backend-prod.elasticbeanstalk.com`
-   - Health check: `http://floodguard-backend-prod.elasticbeanstalk.com/api/health` (should return `200 OK`)
+| Member | Frontend LOC | Backend LOC | AWS Setup | Total Work | Complexity |
+|--------|-------------|-------------|-----------|------------|------------|
+| **M1** | ~1,300 | ~800 | **S3 (bucket, CORS, presigned URLs)** | **~2,100 + S3 setup** | Map (Mapbox), weather charts, S3 presigned URLs (AWS SDK) |
+| **M2** | ~1,150 | ~900 | **RDS (instance, schema, migrations)** | **~2,050 + RDS setup** | Request queue, claim logic, Prisma schema design, DB migrations |
+| **M3** | ~1,400 | ~1,000 | **EB (2 environments, deployment)** | **~2,400 + EB setup** | Alert escalation, report review, geofence validation, EB deployment pipeline |
+| **M4** | ~1,000 | ~1,150 | **IAM (roles, security groups, env vars)** | **~2,150 + IAM setup** | JWT + bcrypt, role guards, IAM policies, security configuration |
 
-2. **AWS Console Screenshots** (each member takes screenshots of their services)
-   - Member 4: Elastic Beanstalk environments (green health), RDS instance (status: available), S3 bucket (with uploaded objects)
-   - Member 1: S3 console showing uploaded report photos
-   - Member 2: S3 console showing uploaded shelter photos
-   - Member 3: CloudWatch Logs (EB log streams — if available, otherwise show RDS connection logs)
-
-3. **Database Evidence**
-   - Export sample data from each table (users, regions, alerts, reports, flood_requests, evacuation_routes)
-   - Show foreign key relationships working (e.g., alert.regionId → regions.id)
-
-4. **Code Repository**
-   - Separate branches per member: `member1-resident-info`, `member2-resident-emergency`, `member3-admin`, `member4-super-admin`
-   - Clear commit history showing each member's contributions
-   - README with deployment instructions
-
-5. **Workload Matrix** (for report)
-   - Use the matrix above (Frontend Pages, Backend Modules, Database Tables, API Endpoints, Lines of Code, AWS Services, Unique Complexity)
-   - Each member highlights their unique contributions
+**Balancing Factor:** LOC differences are offset by AWS complexity
+- M1 has slightly less code but handles complex S3 presigned URL logic
+- M2 has moderate code but owns entire database design and migrations (highest DB complexity)
+- M3 has most code but EB deployment is well-documented (AWS handled)
+- M4 has moderate code but handles most security-critical components (JWT, IAM, guards)
 
 ---
 
-## Equal Division Proof (Lines of Code + Effort)
+## Learning Outcomes (All Members Gain)
 
-| Member | Frontend LOC | Backend LOC | Deployment Effort | Total Estimated LOC | Unique Complexity |
-|--------|-------------|-------------|-------------------|---------------------|-------------------|
-| **Member 1** | ~1,300 | ~750 | 0 | **~2,050** | Map integration, weather data display, S3 presigned URLs |
-| **Member 2** | ~1,600 | ~1,150 | 0 | **~2,250** | Request lifecycle state machine, shelter capacity tracking, S3 presigned URLs |
-| **Member 3** | ~1,700 | ~1,350 | 0 | **~2,450** | Alert escalation logic, report review workflow, region geofence validation |
-| **Member 4** | ~1,000 | ~1,300 | **EB + RDS + S3 setup** | **~2,300** + deployment | Auth system (JWT, guards), infrastructure setup (EB, RDS config, S3 bucket, IAM) |
+### Technical Skills (Everyone)
+- ✅ **Frontend:** React 19, Next.js 16 App Router, Tailwind CSS 4, TypeScript
+- ✅ **Backend:** NestJS 11, TypeScript, REST APIs, DTO validation
+- ✅ **Database:** PostgreSQL, Prisma ORM, migrations, schema design
+- ✅ **Authentication:** JWT, bcrypt, role-based access control
+- ✅ **AWS Elastic Beanstalk:** Deploy Node.js apps, environment configuration, health checks
+- ✅ **AWS RDS:** PostgreSQL setup, security groups, connection management
+- ✅ **AWS S3:** Bucket configuration, presigned URLs, IAM policies
+- ✅ **AWS IAM:** Roles, policies, instance profiles, security best practices
+- ✅ **Git:** Branching, merging, collaboration workflows
 
-> **Conclusion:** Workload is roughly equal (~2,050-2,450 LOC per member). Member 4 has slightly fewer frontend pages but compensates with deployment responsibility (EB, RDS, S3 setup, security groups, IAM policies, health checks, Procfile, migration scripts).
+### AWS Hands-On Experience (Everyone)
+| AWS Service | Everyone Uses | Lead Responsibility |
+|-------------|---------------|---------------------|
+| **Elastic Beanstalk** | ✅ All deploy their code with `eb deploy` | Member 3 (initial setup, troubleshooting) |
+| **RDS PostgreSQL** | ✅ All connect to same DB, write to their tables | Member 2 (instance setup, schema coordination) |
+| **S3** | ✅ All use photo uploads (M1 & M2 directly, M3 reads) | Member 1 (bucket setup, presigned URL implementation) |
+| **IAM** | ✅ All use permissions from instance profile | Member 4 (role creation, policy management) |
+
+---
+
+## Submission Artifacts
+
+### 1. Code Repository
+- **Branches:**
+  - `main` — final merged code
+  - `member1-resident-s3` — M1's features + S3 setup
+  - `member2-volunteer-rds` — M2's features + RDS setup
+  - `member3-admin-eb` — M3's features + EB setup
+  - `member4-auth-iam` — M4's features + IAM setup
+- **Commit History:** Each member has clear commits showing their work
+- **README.md:** Setup instructions, deployment guide, environment variables
+
+### 2. AWS Documentation (by Service Lead)
+- `docs/aws-s3-setup.md` (Member 1)
+- `docs/aws-rds-setup.md` (Member 2)
+- `docs/aws-eb-deployment.md` (Member 3)
+- `docs/aws-iam-security.md` (Member 4)
+- `docs/aws-architecture.md` (All collaborate)
+
+### 3. AWS Console Screenshots
+- **Member 1:** S3 bucket (objects list), CORS configuration, IAM S3 policy
+- **Member 2:** RDS instance (status: available), security groups, parameter groups
+- **Member 3:** EB environments (green health), deployment history, health checks
+- **Member 4:** IAM roles, instance profile, CloudWatch logs, security groups
+
+### 4. Deployed Application
+- **Frontend URL:** `http://floodguard-frontend-prod.elasticbeanstalk.com`
+- **Backend URL:** `http://floodguard-backend-prod.elasticbeanstalk.com`
+- **Health Check:** `http://floodguard-backend-prod.elasticbeanstalk.com/api/health` (200 OK)
+
+### 5. Database Evidence
+- Prisma schema file (`schema.prisma`) showing all tables
+- Sample data exports from each table
+- ER diagram showing relationships
+
+### 6. API Documentation
+- Postman collection with all endpoints (organized by member)
+- Example requests/responses
+- Authentication flow diagram
+
+### 7. Workload Matrix
+Use the table above showing:
+- Lines of code per member
+- AWS service ownership
+- Unique complexity per member
+
+### 8. Individual Reflections
+Each member writes 1-2 pages:
+- What features you built
+- What AWS service you led (what you learned, challenges faced)
+- What you learned from other members' AWS services
+- How you collaborated with the team
+- Technical challenges and solutions
+
+---
+
+## Advantages of This Distribution
+
+### 1. **Equal AWS Experience**
+- Everyone deploys to EB → everyone learns deployment
+- Everyone uses RDS → everyone learns databases in the cloud
+- Everyone uses S3 → everyone learns object storage
+- Everyone uses IAM → everyone learns cloud security
+
+### 2. **Specialization + Knowledge Sharing**
+- Each member becomes "expert" in one AWS service (lead role)
+- Experts help teammates troubleshoot their service
+- Documentation ensures knowledge transfer
+
+### 3. **Parallel Development**
+- All 4 members can work simultaneously (no bottlenecks)
+- AWS setup in Week 1 unblocks everyone
+- Backend & Frontend development happens in parallel
+
+### 4. **Real-World Team Dynamics**
+- Mimics actual software teams (specialists who collaborate)
+- Daily standups keep everyone synchronized
+- Shared infrastructure requires communication
+
+### 5. **Fair Assessment**
+- Equal lines of code (~2,000-2,400 per member)
+- Equal AWS responsibility (1 major service each)
+- Equal feature count (2 per member)
+- Clear individual contributions (separate branches)
+
+---
+
+## Risk Mitigation
+
+### What if one member's AWS service blocks others?
+
+**Solution:** Week 1 is dedicated to AWS setup with checkpoints:
+- If RDS setup delayed → Member 2 gets help from Member 4 (IAM expert)
+- If EB setup delayed → Member 3 gets help from Member 1 (config files)
+- If S3 setup delayed → Member 1 gets help from Member 4 (IAM policies)
+- If IAM setup delayed → Member 4 gets help from all (security is critical)
+
+**Backup Plan:** 
+- Use local database (PostgreSQL) for weeks 2-3 if RDS delayed
+- Use temporary IAM role if Member 4's role delayed
+- Use public S3 bucket (temporarily) if IAM policy delayed
+
+### What if someone can't meet the timeline?
+
+**Solution:** 
+- **Pair programming:** Two members work together on blocked feature
+- **Feature swap:** Swap a smaller feature between members
+- **Code review:** Other members review and suggest fixes
+- **Weekend catch-up:** Extended work session with team support
+
+---
+
+**End of Work Breakdown**
+
+> **Summary:** 4 members, 3 roles (Resident, Volunteer, Admin), 8 features total (2 per member), 4 AWS services (1 lead per member), equal learning opportunities for all.
