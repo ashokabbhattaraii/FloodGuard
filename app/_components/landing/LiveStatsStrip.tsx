@@ -54,7 +54,8 @@ export default function LiveStatsStrip() {
   useEffect(() => {
     async function fetchStats() {
       try {
-        const res = await fetch("http://localhost:5001/api/public/stats");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+        const res = await fetch(`${apiUrl}/public/stats`);
         if (res.ok) {
           const data = await res.json();
           setStats(data);
