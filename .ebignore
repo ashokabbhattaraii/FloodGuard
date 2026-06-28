@@ -11,5 +11,8 @@ bun.lockb
 *.log
 .DS_Store
 
-# Don't exclude node_modules - let EB install them
-# Don't exclude .next - we need the build output
+# Exclude node_modules - EB will install production deps
+node_modules/
+
+# Include .next build output - pre-built locally
+# .next/
