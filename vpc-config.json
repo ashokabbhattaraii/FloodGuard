@@ -1,0 +1,23 @@
+{
+  "VpcId": "vpc-07d2b4c43ff041146",
+  "InternetGatewayId": "igw-009fc1d1086522ed5",
+  "NatGatewayId": "nat-02ce6b6994001b785",
+  "ElasticIpAllocationId": "eipalloc-0cdc1e689e7f481e1",
+  "PublicSubnets": {
+    "Subnet1a": "subnet-0704ba19e17cd3ddd",
+    "Subnet1b": "subnet-0dc2ca207cee180e9"
+  },
+  "PrivateSubnets": {
+    "Subnet1a": "subnet-00229db6e6d13c216",
+    "Subnet1b": "subnet-0adbb4338e964368d"
+  },
+  "RouteTables": {
+    "Public": "rtb-098ce92c9770ac692",
+    "Private": "rtb-01fd7f73af552278e"
+  },
+  "SecurityGroups": {
+    "Web": "sg-0d7db9709c3129f59",
+    "App": "sg-04e61c0f13297e3a1",
+    "Database": "sg-01633b6bfc23f1cfc"
+  }
+}
