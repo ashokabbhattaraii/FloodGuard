@@ -30,7 +30,7 @@ export default function PendingApprovalBanner() {
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
-            <span>Registered: {new Date(user.createdAt).toLocaleDateString()}</span>
+            <span>Registered: {user.createdAt ? new Date(user.createdAt as string).toLocaleDateString() : 'Recently'}</span>
           </div>
         </div>
       </div>
