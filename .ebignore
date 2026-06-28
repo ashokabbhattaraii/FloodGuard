@@ -1,11 +1,28 @@
+# Exclude source and development files - deploy built output
 backend/
 .git/
 .env
+.env.local
 docs/
 *.md
 bun.lockb
-.next/cache/
-.next/trace
 .claude/
 .antigravitycli/
 .agents/
+app/
+node_modules/
+*.log
+.DS_Store
+.next/cache/
+.next/trace
+.next/diagnostics/
+.next/build/
+.next/dev/
+
+# Keep these for deployment
+# .next/standalone/
+# .next/static/
+# .ebextensions/
+# .platform/
+# Procfile
+# package.json
