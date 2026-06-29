@@ -2,6 +2,7 @@
 
 import { useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { ThemeProvider } from "@/app/_components/theme/ThemeProvider";
@@ -70,13 +71,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             {/* Logo top + Theme toggle for mobile */}
             <div className="flex items-center justify-between mb-8 sm:mb-12">
               <Link href="/" className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-[10px] bg-[var(--accent)] flex items-center justify-center shadow-[0_14px_28px_-18px_rgba(3,105,161,0.9)]">
-                  <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
-                    <path d="M16 6C13 6 10 8 9 11C8 14 9 16 10 17.5C11 19 12.5 20 14 21C15 21.7 15.5 22.5 16 24C16.5 22.5 17 21.7 18 21C19.5 20 21 19 22 17.5C23 16 24 14 23 11C22 8 19 6 16 6Z" fill="white" opacity="0.95"/>
-                    <path d="M12 18C13 17 14.5 16.5 16 16.5C17.5 16.5 19 17 20 18" stroke="#7c7cff" strokeWidth="1.8" strokeLinecap="round"/>
-                    <circle cx="16" cy="13" r="2.5" fill="#7c7cff" opacity="0.8"/>
-                  </svg>
-                </div>
+                <svg width="36" height="36" viewBox="0 0 32 32" fill="none" className="shrink-0">
+                  <rect width="32" height="32" rx="8" fill="#7c7cff"/>
+                  <path d="M16 6C13 6 10 8 9 11C8 14 9 16 10 17.5C11 19 12.5 20 14 21C15 21.7 15.5 22.5 16 24C16.5 22.5 17 21.7 18 21C19.5 20 21 19 22 17.5C23 16 24 14 23 11C22 8 19 6 16 6Z" fill="white" opacity="0.95"/>
+                  <path d="M12 18C13 17 14.5 16.5 16 16.5C17.5 16.5 19 17 20 18" stroke="#7c7cff" strokeWidth="1.8" strokeLinecap="round"/>
+                  <circle cx="16" cy="13" r="2.5" fill="#7c7cff" opacity="0.8"/>
+                </svg>
                 <div>
                   <span className="block text-app font-[700] text-[16px]">FloodGuard</span>
                   <span className="block text-[11px] text-app-muted">Flood response network</span>

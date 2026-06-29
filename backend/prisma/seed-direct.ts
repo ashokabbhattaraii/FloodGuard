@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { PrismaClient, UserRole, RiskLevel, AlertSeverity, AlertStatus, SensorType } from '@prisma/client';
 import { adapter } from '../prisma.config';
 

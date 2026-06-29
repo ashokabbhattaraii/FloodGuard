@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import PillButton from "@/app/_components/ui/PillButton";
 import SystemOrchestration from "@/app/_components/landing/SystemOrchestration";
+import { useAuth } from "@/app/hooks/use-auth";
 
 export default function HeroSection() {
+  const router = useRouter();
+  const { isAuthenticated, loading } = useAuth();
   const sectionRef = useRef<HTMLElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLHeadingElement>(null);
@@ -15,6 +19,24 @@ export default function HeroSection() {
   const orb1Ref = useRef<HTMLDivElement>(null);
   const orb2Ref = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+
+  const handleViewAlerts = () => {
+    if (loading) return;
+    if (isAuthenticated) {
+      router.push('/dashboard/resident');
+    } else {
+      router.push('/login');
+    }
+  };
+
+  const handleReportIncident = () => {
+    if (loading) return;
+    if (isAuthenticated) {
+      router.push('/dashboard/resident/reports');
+    } else {
+      router.push('/login');
+    }
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -106,13 +128,13 @@ export default function HeroSection() {
           </p>
 
           <div ref={ctaRef} style={{ opacity: 0 }} className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
-            <PillButton size="lg" variant="primary">
+            <PillButton size="lg" variant="primary" onClick={handleViewAlerts} disabled={loading}>
               View Live Alerts
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                 <path d="M3 7.5h9M8 3.5l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </PillButton>
-            <PillButton size="lg" variant="ghost">Report an Incident</PillButton>
+            <PillButton size="lg" variant="ghost" onClick={handleReportIncident} disabled={loading}>Report an Incident</PillButton>
           </div>
 
           {/* Trust metrics */}

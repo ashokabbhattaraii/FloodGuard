@@ -16,6 +16,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { FloodForecastModule } from './flood-forecast/flood-forecast.module';
 import { PublicModule } from './public/public.module';
+import { VolunteerHelpModule } from './volunteer-help/volunteer-help.module';
 import { HealthController } from './health.controller';
 import { LoggerMiddleware } from './common/logger.middleware';
 
@@ -38,6 +39,7 @@ import { LoggerMiddleware } from './common/logger.middleware';
     UploadsModule,
     FloodForecastModule,
     PublicModule,
+    VolunteerHelpModule,
   ],
   controllers: [HealthController],
 })

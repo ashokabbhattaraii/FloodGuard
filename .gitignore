@@ -43,14 +43,22 @@ bun-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-!.elasticbeanstalk/config.yml
-# Ignore large deployment artifacts
-.elasticbeanstalk/app_versions/
-.elasticbeanstalk/logs/
+# Elastic Beanstalk Files (apply at repo root and in backend/ frontend/)
+**/.elasticbeanstalk/*
+!**/.elasticbeanstalk/*.cfg.yml
+!**/.elasticbeanstalk/*.global.yml
+!**/.elasticbeanstalk/config.yml
+# Ignore large auto-generated deployment artifacts
+**/.elasticbeanstalk/app_versions/
+**/.elasticbeanstalk/logs/
+
+# Local deploy bundles
+deploy.zip
+
+# Claude / agent tooling
+.claude/
+.agents/
+.antigravitycli/
 
 # IDEs
 .vscode/

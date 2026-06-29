@@ -7,10 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: (
-      process.env.FRONTEND_URL ||
-      'http://localhost:3000,http://localhost:3001,https://d1brawvkbdw12u.cloudfront.net,https://d2rcbc2k3a39go.cloudfront.net,http://floodguard-frontend-env.eba-sfpvamy6.us-east-1.elasticbeanstalk.com,http://Floodguard-backend-env-env.eba-uhm53rb8.us-east-1.elasticbeanstalk.com'
-    )
+    origin: (process.env.FRONTEND_URL || 'http://localhost:3000,http://localhost:3001')
       .split(',')
       .map((o) => o.trim()),
     credentials: true,

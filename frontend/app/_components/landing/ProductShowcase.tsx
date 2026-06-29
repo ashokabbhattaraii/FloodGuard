@@ -118,9 +118,12 @@ export default function ProductShowcase() {
             {/* Sidebar */}
             <div className="w-[150px] shrink-0 border-r border-app py-3 px-2.5 flex-col gap-0.5 hidden sm:flex">
               <div className="flex items-center gap-2 px-2 py-1.5 mb-3">
-                <div className="w-5 h-5 rounded-full bg-[#0369a1] flex items-center justify-center shrink-0">
-                  <svg width="9" height="9" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5C4 1.5 1.5 4 1.5 7C1.5 9.5 3.8 11.5 6.5 11.5C9.2 11.5 11.5 9.5 11.5 7C11.5 4 9 1.5 6.5 1.5Z" fill="white" opacity="0.9"/></svg>
-                </div>
+                <svg width="20" height="20" viewBox="0 0 32 32" fill="none" className="shrink-0">
+                  <rect width="32" height="32" rx="8" fill="#7c7cff"/>
+                  <path d="M16 6C13 6 10 8 9 11C8 14 9 16 10 17.5C11 19 12.5 20 14 21C15 21.7 15.5 22.5 16 24C16.5 22.5 17 21.7 18 21C19.5 20 21 19 22 17.5C23 16 24 14 23 11C22 8 19 6 16 6Z" fill="white" opacity="0.95"/>
+                  <path d="M12 18C13 17 14.5 16.5 16 16.5C17.5 16.5 19 17 20 18" stroke="#7c7cff" strokeWidth="1.8" strokeLinecap="round"/>
+                  <circle cx="16" cy="13" r="2.5" fill="#7c7cff" opacity="0.8"/>
+                </svg>
                 <span className="text-[12px] font-semibold text-app">FloodGuard</span>
               </div>
               {sidebar.map((s) => (

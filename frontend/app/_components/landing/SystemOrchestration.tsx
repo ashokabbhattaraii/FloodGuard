@@ -124,7 +124,6 @@ export default function SystemOrchestration() {
           </span>
           <div>
             <div className="text-[13px] text-app font-semibold tracking-tight leading-none">System Orchestration</div>
-            <div className="text-[10px] text-app-muted mt-1">ap-southeast-1 · real-time pipeline</div>
           </div>
         </div>
         <span className="text-[10px] text-app-muted tracking-[0.14em] uppercase px-2.5 py-1 rounded-[100px] glass-1">live</span>

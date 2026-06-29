@@ -223,24 +223,50 @@ enum RequestStatus {
 }
 
 model FloodRequest {
-  id           String          @id @default(uuid())
+  id           String               @id @default(uuid())
   userId       String
-  user         User            @relation(fields: [userId], references: [id])
+  user         User                 @relation(fields: [userId], references: [id])
   type         RequestType
-  priority     RequestPriority @default(medium)
-  status       RequestStatus   @default(pending)
+  priority     RequestPriority      @default(medium)
+  status       RequestStatus        @default(pending)
   title        String
   description  String
   location     String
   latitude     Float?
   longitude    Float?
-  peopleCount  Int             @default(1)
+  peopleCount  Int                  @default(1)
   contactPhone String?
   regionId     String?
   assignedTo   String?
   notes        String?
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  helpRequests VolunteerHelpRequest[] @relation("RequestHelpRequests")
 
   @@map("flood_requests")
+}
+
+enum HelpRequestStatus {
+  pending
+  accepted
+  rejected
+  completed
+}
+
+model VolunteerHelpRequest {
+  id               String            @id @default(uuid())
+  floodRequestId   String
+  floodRequest     FloodRequest      @relation("RequestHelpRequests", fields: [floodRequestId], references: [id], onDelete: Cascade)
+  requestedBy      String            // Volunteer who needs help
+  requestedTo      String            // Volunteer being asked for help
+  message          String            // Why help is needed
+  status           HelpRequestStatus @default(pending)
+  responseMessage  String?           // Acceptance note or rejection reason
+  respondedAt      DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([requestedTo, status])
+  @@index([floodRequestId])
+  @@map("volunteer_help_requests")
 }

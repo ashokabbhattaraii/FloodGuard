@@ -1,12 +1,37 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Standard deployment for Elastic Beanstalk
-  // Port is set via environment variable in start script
+  output: 'standalone',
+  compress: true,
+  images: {
+    unoptimized: true,
+  },
   experimental: {
-    // Ensure proper production build
     optimizePackageImports: ['recharts', 'leaflet']
-  }
+  },
+  // Optimize headers for CloudFront caching
+  async headers() {
+    return [
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

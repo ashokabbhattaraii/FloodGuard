@@ -1,18 +1,11 @@
-# Exclude development files
-backend/
 .git/
 .env.local
-docs/
-*.md
-bun.lockb
 .claude/
-.antigravitycli/
 .agents/
+*.md
 *.log
-.DS_Store
-
-# Exclude node_modules - EB will install production deps
 node_modules/
-
-# Include .next build output - pre-built locally
-# .next/
+app/
+public/
+.next/cache
+.next/standalone/

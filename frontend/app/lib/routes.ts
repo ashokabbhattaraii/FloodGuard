@@ -28,6 +28,7 @@ export const routes = {
       shelters: '/dashboard/volunteer/shelters',
       relief: '/dashboard/volunteer/relief',
       activity: '/dashboard/volunteer/activity',
+      helpRequests: '/dashboard/volunteer/help-requests',
     },
   },
 } as const;

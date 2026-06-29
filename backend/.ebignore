@@ -2,6 +2,8 @@
 .env
 *.md
 .claude/
+.agents/
 node_modules/
 coverage/
 *.log
+test/

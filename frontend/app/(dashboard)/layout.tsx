@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/app/queries/auth";
 import { routes } from "@/app/lib/routes";
 import { roleLabel } from "@/app/lib/auth-helpers";
@@ -40,6 +41,7 @@ const navByRole: Record<string, NavItem[]> = {
   volunteer: [
     { href: routes.dashboard.volunteer.root, label: "My Tasks", icon: icon("M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h6a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h0a2 2 0 002-2M9 5a2 2 0 012-2h0a2 2 0 012 2") },
     { href: routes.dashboard.volunteer.requests, label: "Open Requests", icon: icon("M15 7a5 5 0 00-10 0c0 5.5-2 7-2 7h14s-2-1.5-2-7") },
+    { href: routes.dashboard.volunteer.helpRequests, label: "Help Requests", icon: icon("M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z") },
     { href: routes.dashboard.volunteer.shelters, label: "Shelters", icon: icon("M10 3l7 6v8H3V9l7-6zM8 17v-5h4v5") },
     { href: routes.dashboard.volunteer.relief, label: "Relief Log", icon: icon("M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8") },
     { href: routes.dashboard.volunteer.activity, label: "My Activity", icon: icon("M12 8v4l3 3M3 12a9 9 0 1018 0 9 9 0 00-18 0") },
@@ -89,13 +91,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
           {/* Logo */}
           <div className="flex items-center gap-3 px-4 h-16 border-b border-app">
-            <div className="w-9 h-9 rounded-[10px] bg-[var(--accent)] flex items-center justify-center shrink-0 shadow-[0_14px_28px_-18px_rgba(3,105,161,0.9)]">
-              <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
-                <path d="M16 6C13 6 10 8 9 11C8 14 9 16 10 17.5C11 19 12.5 20 14 21C15 21.7 15.5 22.5 16 24C16.5 22.5 17 21.7 18 21C19.5 20 21 19 22 17.5C23 16 24 14 23 11C22 8 19 6 16 6Z" fill="white" opacity="0.95"/>
-                <path d="M12 18C13 17 14.5 16.5 16 16.5C17.5 16.5 19 17 20 18" stroke="#7c7cff" strokeWidth="1.8" strokeLinecap="round"/>
-                <circle cx="16" cy="13" r="2.5" fill="#7c7cff" opacity="0.8"/>
-              </svg>
-            </div>
+            <svg width="36" height="36" viewBox="0 0 32 32" fill="none" className="shrink-0">
+              <rect width="32" height="32" rx="8" fill="#7c7cff"/>
+              <path d="M16 6C13 6 10 8 9 11C8 14 9 16 10 17.5C11 19 12.5 20 14 21C15 21.7 15.5 22.5 16 24C16.5 22.5 17 21.7 18 21C19.5 20 21 19 22 17.5C23 16 24 14 23 11C22 8 19 6 16 6Z" fill="white" opacity="0.95"/>
+              <path d="M12 18C13 17 14.5 16.5 16 16.5C17.5 16.5 19 17 20 18" stroke="#7c7cff" strokeWidth="1.8" strokeLinecap="round"/>
+              <circle cx="16" cy="13" r="2.5" fill="#7c7cff" opacity="0.8"/>
+            </svg>
             <div className={`min-w-0 ${collapsed ? "lg:hidden" : ""}`}>
                 <span className="block text-app font-[700] text-[16px]">FloodGuard</span>
                 <span className="block text-[11px] text-app-muted">Response Operations</span>
