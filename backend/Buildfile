@@ -1,0 +1,2 @@
+build: npm install --production && npx prisma generate
+
