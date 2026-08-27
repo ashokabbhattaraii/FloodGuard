@@ -73,3 +73,7 @@ Thumbs.db
 
 # Documentation (markdown files)
 # *.md
+
+# Infra deploy state (contains generated resource IDs & secret ARNs)
+infra/.state/
+infra/build/

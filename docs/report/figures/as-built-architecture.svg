@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="1010" viewBox="0 0 1760 1010">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#44576B"/></marker></defs>
+<rect width="1760" height="1010" fill="#FFFFFF"/>
+<text x="40" y="44" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="25" font-weight="700" fill="#16212B">FloodGuard — Task #2 As-Built Architecture</text>
+<text x="40" y="68" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="400" fill="#5A6B7B">AWS Cloud · Region us-east-1 · Account 292960609118 · one CloudFront hostname, three origins</text>
+<rect x="30" y="92" width="1380" height="356" rx="12" fill="none" stroke="#8C4FFF" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="44" y="114" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="700" fill="#8C4FFF">SYNCHRONOUS REQUEST PATH</text>
+<rect x="52" y="210" width="118" height="84" rx="9" fill="#F2F4F7" stroke="#5A6B7B" stroke-width="2"/>
+<text x="111.0" y="234.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">Residents</text>
+<text x="111.0" y="250.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">Volunteers</text>
+<text x="111.0" y="266.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">Admins</text>
+<text x="111.0" y="282.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">browser</text>
+<rect x="210" y="210" width="130" height="84" rx="9" fill="#F3EAFB" stroke="#8C4FFF" stroke-width="2"/>
+<text x="275.0" y="240.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="15" font-weight="600" fill="#16212B">CloudFront</text>
+<text x="275.0" y="258.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">HTTPS</text>
+<text x="275.0" y="272.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">single hostname</text>
+<rect x="400" y="128" width="170" height="74" rx="9" fill="#FFF3E6" stroke="#ED7100" stroke-width="2"/>
+<text x="485.0" y="154.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="600" fill="#16212B">Elastic Beanstalk</text>
+<text x="485.0" y="171.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">Frontend · Next.js 16</text>
+<text x="485.0" y="185.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">SingleInstance</text>
+<rect x="400" y="230" width="170" height="74" rx="9" fill="#FFF3E6" stroke="#ED7100" stroke-width="2"/>
+<text x="485.0" y="256.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="600" fill="#16212B">ALB + Auto Scaling</text>
+<text x="485.0" y="273.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">Elastic Beanstalk</text>
+<text x="485.0" y="287.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">Backend · NestJS 11</text>
+<rect x="400" y="336" width="170" height="74" rx="9" fill="#F3EAFB" stroke="#8C4FFF" stroke-width="2"/>
+<text x="485.0" y="362.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="600" fill="#16212B">API Gateway</text>
+<text x="485.0" y="379.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">REST v1 · stage v1</text>
+<text x="485.0" y="393.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">X-Ray active</text>
+<rect x="620" y="230" width="150" height="74" rx="9" fill="#E8F0FD" stroke="#3B48CC" stroke-width="2"/>
+<text x="695.0" y="256.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="600" fill="#16212B">Amazon RDS</text>
+<text x="695.0" y="273.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">PostgreSQL 16.10</text>
+<text x="695.0" y="287.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">db.t3.micro</text>
+<rect x="620" y="322" width="158" height="46" rx="9" fill="#FFF3E6" stroke="#ED7100" stroke-width="2"/>
+<text x="699.0" y="349.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">fg-report-intake</text>
+<rect x="620" y="382" width="158" height="46" rx="9" fill="#FFF3E6" stroke="#ED7100" stroke-width="2"/>
+<text x="699.0" y="409.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">fg-upload-presign</text>
+<rect x="830" y="382" width="128" height="46" rx="9" fill="#E9F7EC" stroke="#1B9E4B" stroke-width="2"/>
+<text x="894.0" y="402.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">Amazon S3</text>
+<text x="894.0" y="418.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">uploads</text>
+<rect x="1010" y="382" width="158" height="46" rx="9" fill="#FFF3E6" stroke="#ED7100" stroke-width="2"/>
+<text x="1089.0" y="409.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">fg-image-process</text>
+<path d="M 170,252 L 206,252" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="188.0" y="245.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="12" fill="#44576B">HTTPS</text>
+<path d="M 340,252 L 368,252 L 368,165 L 396,165" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="368.0" y="202.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="12" fill="#44576B">/</text>
+<path d="M 340,252 L 396,252" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="368.0" y="246.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="12" fill="#44576B">/api/*</text>
+<path d="M 340,252 L 368,252 L 368,373 L 396,373" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="368.0" y="326.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="12" fill="#44576B">/sl/*</text>
+<path d="M 570,267 L 616,267" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="593" y="318" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="10" font-weight="400" fill="#5A6B7B">TLS 5432</text>
+<path d="M 570,358 L 590,358 L 590,345 L 616,345" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<path d="M 570,373 L 590,373 L 590,405 L 616,405" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<path d="M 778,405 L 826,405" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="802" y="442" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="10" font-weight="400" fill="#5A6B7B">presigned PUT</text>
+<path d="M 958,405 L 1006,405" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="982" y="442" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="10" font-weight="400" fill="#5A6B7B">ObjectCreated:*</text>
+<path d="M 1089,382 L 1089,180 L 700,180 L 700,226" fill="none" stroke="#44576B" stroke-width="2.1" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="894.5" y="173.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#44576B">/api/internal/uploads/verified  (shared key)</text>
+<text x="1185" y="250" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">Lambdas never open a</text>
+<text x="1185" y="265" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">connection to Postgres.</text>
+<text x="1185" y="280" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">The monolith owns RDS;</text>
+<text x="1185" y="295" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">the functions own S3 +</text>
+<text x="1185" y="310" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">DynamoDB and write back</text>
+<text x="1185" y="325" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">over /api/internal/*.</text>
+<text x="1185" y="340" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">→ no NAT Gateway,</text>
+<text x="1185" y="355" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">→ RDS SG stays closed.</text>
+<rect x="30" y="512" width="1380" height="372" rx="12" fill="none" stroke="#C7397B" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="44" y="534" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="700" fill="#C7397B">EVENT-DRIVEN PIPELINE</text>
+<rect x="52" y="596" width="132" height="74" rx="9" fill="#FDE9F3" stroke="#C7397B" stroke-width="2"/>
+<text x="118.0" y="622.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="600" fill="#16212B">EventBridge</text>
+<text x="118.0" y="639.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">Scheduler</text>
+<text x="118.0" y="653.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">rate(10 minutes)</text>
+<rect x="228" y="596" width="152" height="74" rx="9" fill="#FFF3E6" stroke="#ED7100" stroke-width="2"/>
+<text x="304.0" y="622.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="600" fill="#16212B">fg-weather-ingest</text>
+<text x="304.0" y="639.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">Open-Meteo API</text>
+<text x="304.0" y="653.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">48h precipitation</text>
+<rect x="430" y="540" width="158" height="62" rx="9" fill="#E8F0FD" stroke="#3B48CC" stroke-width="2"/>
+<text x="509.0" y="560.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">Amazon DynamoDB</text>
+<text x="509.0" y="576.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">fg-weather-snapshots</text>
+<text x="509.0" y="590.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">TTL 30 days</text>
+<rect x="430" y="660" width="158" height="62" rx="9" fill="#FDE9F3" stroke="#C7397B" stroke-width="2"/>
+<text x="509.0" y="680.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">SQS</text>
+<text x="509.0" y="696.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">fg-forecast-jobs</text>
+<text x="509.0" y="710.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">batch 5 · maxConc 3</text>
+<rect x="430" y="762" width="158" height="46" rx="9" fill="#FDE9F3" stroke="#C7397B" stroke-width="2"/>
+<text x="509.0" y="789.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="600" fill="#16212B">fg-forecast-jobs-dlq</text>
+<rect x="636" y="660" width="152" height="62" rx="9" fill="#FFF3E6" stroke="#ED7100" stroke-width="2"/>
+<text x="712.0" y="688.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">fg-flood-forecast</text>
+<text x="712.0" y="704.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">risk score 0-100</text>
+<rect x="836" y="660" width="158" height="62" rx="9" fill="#FDE9F3" stroke="#C7397B" stroke-width="2"/>
+<text x="915.0" y="680.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">SQS</text>
+<text x="915.0" y="696.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">fg-alert-dispatch</text>
+<text x="915.0" y="710.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">batch 1 · maxConc 2</text>
+<rect x="836" y="762" width="158" height="46" rx="9" fill="#FDE9F3" stroke="#C7397B" stroke-width="2"/>
+<text x="915.0" y="789.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="600" fill="#16212B">fg-alert-dispatch-dlq</text>
+<rect x="1042" y="660" width="152" height="62" rx="9" fill="#FFF3E6" stroke="#ED7100" stroke-width="2"/>
+<text x="1118.0" y="688.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">fg-alert-dispatch</text>
+<text x="1118.0" y="704.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">idempotent</text>
+<rect x="1242" y="660" width="148" height="62" rx="9" fill="#FDE9F3" stroke="#C7397B" stroke-width="2"/>
+<text x="1316.0" y="680.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="600" fill="#16212B">Amazon SNS</text>
+<text x="1316.0" y="696.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">fg-flood-alerts</text>
+<text x="1316.0" y="710.5" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">email / SMS fan-out</text>
+<path d="M 184,633 L 224,633" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<path d="M 380,633 L 404,633 L 404,571 L 426,571" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="404.0" y="596.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#44576B">snapshot</text>
+<path d="M 380,633 L 404,633 L 404,691 L 426,691" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="404.0" y="676.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#44576B">1 msg / region</text>
+<path d="M 588,691 L 632,691" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<path d="M 788,691 L 832,691" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="810" y="740" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="10" font-weight="400" fill="#5A6B7B">score ≥ 70</text>
+<path d="M 994,691 L 1038,691" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<path d="M 1194,691 L 1238,691" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="1216.0" y="685.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#44576B">publish</text>
+<path d="M 509,722 L 509,758" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="509.0" y="740.0" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#44576B">x3</text>
+<path d="M 915,722 L 915,758" fill="none" stroke="#44576B" stroke-width="2.1" marker-end="url(#ah)"/>
+<text x="915.0" y="740.0" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#44576B">x3</text>
+<path d="M 712,660 L 712,468 L 380,468 L 380,280 L 396,280" fill="none" stroke="#44576B" stroke-width="2.1" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<path d="M 1118,660 L 1118,492 L 366,492 L 366,266 L 396,266" fill="none" stroke="#44576B" stroke-width="2.1" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="726" y="464" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="11" font-weight="400" fill="#5A6B7B">POST /api/internal/regions/:id/risk</text>
+<text x="1132" y="488" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="11" font-weight="400" fill="#5A6B7B">POST /api/internal/alerts  (deduped 30 min)</text>
+<rect x="1430" y="92" width="300" height="792" rx="12" fill="none" stroke="#C4322B" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="1444" y="114" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="700" fill="#C4322B">OBSERVABILITY</text>
+<rect x="1452" y="132" width="256" height="92" rx="9" fill="#FCE9E9" stroke="#C4322B" stroke-width="2"/>
+<text x="1580.0" y="158.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="15" font-weight="600" fill="#16212B">Amazon CloudWatch</text>
+<text x="1580.0" y="176.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">21 alarms → fg-ops-alarms</text>
+<text x="1580.0" y="190.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">14-widget dashboard</text>
+<text x="1580.0" y="204.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">Logs Insights (structured JSON)</text>
+<rect x="1452" y="244" width="256" height="76" rx="9" fill="#FCE9E9" stroke="#C4322B" stroke-width="2"/>
+<text x="1580.0" y="262.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="15" font-weight="600" fill="#16212B">AWS X-Ray</text>
+<text x="1580.0" y="280.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">active tracing on all 6</text>
+<text x="1580.0" y="294.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">functions + APIGW stage</text>
+<text x="1580.0" y="308.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">+ NestJS monolith</text>
+<rect x="1452" y="340" width="256" height="62" rx="9" fill="#FDE9F3" stroke="#C7397B" stroke-width="2"/>
+<text x="1580.0" y="360.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="600" fill="#16212B">Amazon SNS</text>
+<text x="1580.0" y="377.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">fg-ops-alarms</text>
+<text x="1580.0" y="391.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="11" fill="#5A6B7B">(operator notifications)</text>
+<rect x="1452" y="422" width="256" height="62" rx="9" fill="#FCE9E9" stroke="#C4322B" stroke-width="2"/>
+<text x="1580.0" y="442.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="14" font-weight="600" fill="#16212B">AWS Secrets Manager</text>
+<text x="1580.0" y="459.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="10" fill="#5A6B7B">floodguard/app</text>
+<text x="1580.0" y="472.0" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial" font-size="10" fill="#5A6B7B">DB password · JWT · internal key</text>
+<text x="1452" y="528" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#44576B">Every compute component emits</text>
+<text x="1452" y="546" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#44576B">logs, metrics and traces into</text>
+<text x="1452" y="564" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#44576B">the same account, so one service</text>
+<text x="1452" y="582" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#44576B">map spans the monolith and the</text>
+<text x="1452" y="600" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#44576B">serverless tier.</text>
+<text x="1452" y="640" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="700" fill="#16212B">Measured (30 min window):</text>
+<text x="1452" y="660" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">· 253 API Gateway requests</text>
+<text x="1452" y="678" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">· p95 144 ms · p99 921 ms</text>
+<text x="1452" y="696" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">· 0 errors · 0 throttles</text>
+<text x="1452" y="714" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">· SQS sent = received = deleted</text>
+<text x="1452" y="732" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">· both DLQs empty</text>
+<text x="1452" y="750" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">· 441 X-Ray traces</text>
+<path d="M 1410,300 L 1444,300" fill="none" stroke="#C4322B" stroke-width="2.1" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<path d="M 1410,660 L 1424,660 L 1424,300 L 1444,300" fill="none" stroke="#C4322B" stroke-width="2.1" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="40" y="928" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="700" fill="#16212B">Routing</text>
+<text x="112" y="928" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="400" fill="#16212B">/  and  /_next/static/*  →  EB frontend</text>
+<text x="430" y="928" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="400" fill="#16212B">/api/*  →  EB backend (NestJS, owns Postgres)</text>
+<text x="790" y="928" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="13" font-weight="400" fill="#16212B">/sl/*  →  API Gateway  →  Lambda (owns DynamoDB + S3)</text>
+<text x="40" y="952" text-anchor="start" font-family="Segoe UI,Helvetica,Arial" font-size="12" font-weight="400" fill="#5A6B7B">Same-origin throughout, so there is no CORS preflight anywhere and no frontend rebuild when a domain changes.</text>
+</svg>

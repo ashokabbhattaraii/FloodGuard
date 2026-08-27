@@ -4,6 +4,13 @@ import { Injectable } from '@nestjs/common';
 export class WeatherService {
   private readonly baseUrl = 'https://api.open-meteo.com/v1';
   private readonly geocodeUrl = 'https://geocoding-api.open-meteo.com/v1';
+  private readonly TIMEOUT_MS = 10_000;
+
+  private fetchWithTimeout(url: string): Promise<Response> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.TIMEOUT_MS);
+    return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
+  }
 
   async getCurrentWeather(params: {
     lat?: string;
@@ -21,7 +28,7 @@ export class WeatherService {
 
     if (!lat || !lon) throw new Error('lat/lon or city is required');
 
-    const res = await fetch(
+    const res = await this.fetchWithTimeout(
       `${this.baseUrl}/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,precipitation&timezone=auto`,
     );
     const data = await res.json();
@@ -52,7 +59,7 @@ export class WeatherService {
 
     if (!lat || !lon) throw new Error('lat/lon or city is required');
 
-    const res = await fetch(
+    const res = await this.fetchWithTimeout(
       `${this.baseUrl}/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code,wind_speed_10m_max&timezone=auto&forecast_days=7`,
     );
     const data = await res.json();
@@ -81,7 +88,7 @@ export class WeatherService {
 
     if (!lat || !lon) throw new Error('lat/lon or city is required');
 
-    const res = await fetch(
+    const res = await this.fetchWithTimeout(
       `${this.baseUrl}/forecast?latitude=${lat}&longitude=${lon}&hourly=precipitation,precipitation_probability,weather_code,temperature_2m&timezone=auto&forecast_hours=48`,
     );
     const data = await res.json();
@@ -163,7 +170,7 @@ export class WeatherService {
   private async geocodeCity(
     city: string,
   ): Promise<{ lat: string; lon: string }> {
-    const res = await fetch(
+    const res = await this.fetchWithTimeout(
       `${this.geocodeUrl}/search?name=${encodeURIComponent(city)}&count=1`,
     );
     const data = await res.json();

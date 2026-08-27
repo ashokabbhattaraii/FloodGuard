@@ -2,9 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { enableXRay } from './common/xray';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Register before routes so inbound requests open a segment.
+  await enableXRay(app);
 
   app.enableCors({
     origin: (process.env.FRONTEND_URL || 'http://localhost:3000,http://localhost:3001')
